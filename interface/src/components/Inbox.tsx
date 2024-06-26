@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import EmailMenu from "./EmailView/EmailMenu";
+import EmailMenu from "./emailWidgets/EmailMenu";
 import { EmailMenuProps } from "../../types";
 
 const Inbox = () => {
