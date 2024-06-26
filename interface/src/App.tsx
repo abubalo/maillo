@@ -7,10 +7,10 @@ import Login from "./pages/login/Login";
 function App() {
   return (
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route index path="/view" element={<Inbox />} />
+        <Route path="/" element={<Signup />} />
+        <Route path="/home" element={<Home />} />
+        <Route index path="home/view" element={<Inbox />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
       </Routes>
   );
 }
