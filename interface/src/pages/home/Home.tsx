@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EmailView from "../../components/EmailView/EmailView";
+import EmailView from "../../components/emailWidgets/EmailView";
 import Sidebar from "../../components/ui/sidebar/Sidebar";
 
 const Home = () => {
