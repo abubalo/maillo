@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import EmailMenu from "./emailWidgets/EmailMenu";
-import { EmailMenuProps } from "../../types";
+import {  Email } from "./../types";
 
 const Inbox = () => {
-  const [searchParams] = useSearchParams();
-  const view = searchParams.get("view") || "inbox";
 
   const [emails, setEmails] = useState<Email[]>([
     {
