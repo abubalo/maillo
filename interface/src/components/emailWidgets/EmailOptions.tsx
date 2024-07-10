@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RefreshIcon } from "../shared/Icons";
+import { useEmailStoreState } from "../../stores/stateStores";
+import Tooltip from "../ui/tooltip/Tooltip";
+import Button from "../ui/button/Button";
 
 type Props = {
   onSelectAll: () => void;
@@ -8,6 +11,7 @@ type Props = {
 };
 
 const EmailOptions: FC<Props> = ({ onSelectAll, allSelected }) => {
+  const {handleSelectAll, handleDeleteAllEmail, handleMarkAllAsRead, handleMarkAllUnread,} = useEmailStoreState()
   const [rotateRefresh, setRotateRefresh] = useState(false);
 
   const handleRotateRefresh = () => {
@@ -24,6 +28,7 @@ const EmailOptions: FC<Props> = ({ onSelectAll, allSelected }) => {
           onChange={onSelectAll}
         />
         {/* <span className="ml-2">Select All</span> */}
+        <Tooltip text="Refresh">
         <motion.button
           type="button"
           onClick={handleRotateRefresh}
@@ -34,8 +39,9 @@ const EmailOptions: FC<Props> = ({ onSelectAll, allSelected }) => {
         >
           <RefreshIcon />
         </motion.button>
+        </Tooltip>
       </div>
-      <div></div>
+      
       <AnimatePresence>
         {allSelected ? (
           <motion.div
@@ -43,19 +49,12 @@ const EmailOptions: FC<Props> = ({ onSelectAll, allSelected }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="w-64 flex gap-3 "
           >
-            <button type="button">
-              <span>Mark as read</span>
-              <label htmlFor="markAsRead">
-                <input
-                  type="checkbox"
-                  name="markAsRead"
-                  id=""
-                  className="form-checkbox w-5 h-5 text-green-600"
-                />
-              </label>
-            </button>
-            <button type="button">Delete all</button>
+            <Button type="button" className="flex">
+              <span>Mark As Read</span>  
+            </Button>
+            <Button type="button" className="flex wrap">Delete All</Button>
           </motion.div>
         ) : null}
       </AnimatePresence>
