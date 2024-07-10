@@ -1,39 +1,38 @@
-import { useState, useRef, ChangeEvent } from "react";
+import { useRef, ChangeEvent, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Attachment from "./ui/Attachments";
 import {
-  AttatchmentIcon,
+  AttachmentIcon,
   CloseIcon,
   ExpandIcon,
   MinimizeIcon,
   SendIcon,
 } from "./shared/Icons";
+import { useComposeEmailStore, useDialogStore } from "../stores/stateStores";
 
-interface AttachmentFile {
-  name: string;
-  file: File;
-  type: string;
-}
+const ComposeEmail: React.FC = () => {
+  
+  const { isComposeEmailOpen, closeComposeEmail } = useDialogStore();
+  const {
+    to,
+    subject,
+    body,
+    attachments,
+    setTo,
+    setSubject,
+    setBody,
+    addAttachments,
+    removeAttachment,
+  } = useComposeEmailStore();
 
-type Props = {
-  isDialogOpen: boolean;
-  onDialogClose: () => void;
-};
-
-const ComposeEmail: React.FC<Props> = ({ isDialogOpen, onDialogClose }) => {
   const [editorMinimize, setEditorMinimize] = useState(false);
   const [editorExpand, setEditorExpand] = useState(false);
-
-  const [to, setTo] = useState("");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
-  const [attachments, setAttachments] = useState<AttachmentFile[]>([]);
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<unknown>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleEditorClose = () => {
-    onDialogClose();
+    closeComposeEmail();
   };
 
   const handleEditorMinimize = () => {
@@ -61,12 +60,8 @@ const ComposeEmail: React.FC<Props> = ({ isDialogOpen, onDialogClose }) => {
           type: file.type,
         })
       );
-      setAttachments([...attachments, ...newAttachments]);
+      addAttachments(newAttachments);
     }
-  };
-
-  const removeAttachment = (index: number) => {
-    setAttachments(attachments.filter((_, i) => i !== index));
   };
 
   const previewAttachment = (index: number) => {
@@ -74,11 +69,9 @@ const ComposeEmail: React.FC<Props> = ({ isDialogOpen, onDialogClose }) => {
     console.log("Preview attachment:", attachments[index]);
   };
 
-  console.log(import.meta.env.VITE_TINYMCE_API_KEY);
-
   return (
     <AnimatePresence>
-      {isDialogOpen ? (
+      {isComposeEmailOpen ? (
         <motion.div
           className={`fixed bottom-0 right-4 w-full ${
             editorExpand ? "max-w-5xl" : "max-w-xl"
@@ -89,7 +82,7 @@ const ComposeEmail: React.FC<Props> = ({ isDialogOpen, onDialogClose }) => {
           transition={{ duration: 0.3 }}
         >
           <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-300">
-            <h2 className="text-lg font-semibold text-gray-800">New Message</h2>
+            <h2 className="text-lg font-semibold text-gray-800">{subject ? subject : "New Message"}</h2>
             <div className="flex gap-3">
               <button
                 onClick={handleEditorExpand}
@@ -204,7 +197,7 @@ const ComposeEmail: React.FC<Props> = ({ isDialogOpen, onDialogClose }) => {
                     onClick={() => fileInputRef.current?.click()}
                     className="p-2 text-gray-600 transition duration-150 ease-in-out rounded-full hover:text-gray-800 hover:bg-gray-200"
                   >
-                    <AttatchmentIcon size={24} />
+                    <AttachmentIcon size={24} />
                   </button>
                 </div>
               </div>
