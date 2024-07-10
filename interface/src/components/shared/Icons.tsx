@@ -9,8 +9,15 @@ import {
 } from "react-icons/fa";
 import { IoTrashBinOutline, IoSettingsOutline } from "react-icons/io5";
 import { TbSend } from "react-icons/tb";
-import { MdOutlineCreate, MdOutlineArchive, MdAttachFile, MdClose } from "react-icons/md";
-import {  } from "react-icons/md";
+import {
+  MdOutlineCreate,
+  MdOutlineArchive,
+  MdAttachFile,
+  MdClose,
+  MdLabelImportantOutline,
+  MdLabel,
+} from "react-icons/md";
+import {} from "react-icons/md";
 import { IoMdRefresh } from "react-icons/io";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { CiMinimize1 } from "react-icons/ci";
@@ -80,6 +87,15 @@ export const CloseIcon = ({ size, className }: Props) => (
 // export const SendIcon = ({ size, className }: Props) => (
 //   <MdSend size={size} className={className} />
 // );
-export const AttatchmentIcon = ({ size, className }: Props) => (
+export const AttachmentIcon = ({ size, className }: Props) => (
   <MdAttachFile size={size} className={className} />
+);
+export const LabelOutlineIcon = ({ size, className }: Props) => (
+  <MdLabelImportantOutline size={size} className={className} />
+);
+export const LabelSolidIcon = ({ size, className }: Props) => (
+  <MdLabel size={size} className={className} />
+);
+export const EmptyIcon = ({ size, className, text = "Nothing to see here!" }: Props & {text?: string}) => (
+  <div className={className}>{text}</div>
 );
