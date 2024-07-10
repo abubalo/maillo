@@ -1,12 +1,33 @@
-import React from 'react'
-import Compose from "./ComposeEmail"
+import EmailMenu from "./emailWidgets/EmailMenu";
+import { EmailMenuProps } from "../types";
+import EmptyItem from "./shared/EmptyItem";
 
-const Sent = () => {
+type Props = EmailMenuProps;
+const Sent: React.FC<Props> = ({
+  emails,
+  allSelected,
+  onSelectAll,
+  onSelectEmail,
+  onStarEmail,
+onDeleteEmail,
+onMarkAsRead,
+onMarkAsUnread,
+onArchiveEmail,
+onMarkAsSpam
+}) => {
   return (
     <div>
-      sent
+      {emails.length > 0 ? (
+        <EmailMenu
+          {...{ emails, allSelected, onSelectAll, onSelectEmail, onStarEmail, onDeleteEmail }}
+        />
+      ) : (
+        <>
+          <EmptyItem />
+        </>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Sent
+export default Sent;
