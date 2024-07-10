@@ -1,12 +1,15 @@
 import Search from "../ui/search/Search";
-import Sort from "../ui/sort/Sort";
 import Avatar from "../profile/Avatar";
 import { HelpIcon, SettingsIcon } from "../shared/Icons";
 
-const EmailHeader = () => {
+type Props = {
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+};
+const EmailHeader: React.FC<Props> = ({searchQuery, onSearchChange}) => {
   return (
-    <div className="w-full flex items-center justify-between p-2 md:p-4">
-      <Search />
+    <div className="flex items-center justify-between w-full p-2 md:p-4">
+      <Search {...{searchQuery, onSearchChange}} />
       <div className="flex items-center gap-8">
         <div className="flex gap-3 text-2xl">
           <HelpIcon />
