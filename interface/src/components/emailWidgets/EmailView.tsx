@@ -1,8 +1,5 @@
-import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import EmailHeader from "./EmailHeader";
-import EmailMenu from "./EmailMenu";
-import { Email } from "./types";
 import Inbox from "../Inbox";
 import Drafts from "../Drafts";
 import Spam from "../Spam";
@@ -10,46 +7,141 @@ import Sent from "../Sent";
 import Bin from "../Bin";
 import Stars from "../Stars";
 import ComposeEmail from "../ComposeEmail";
+import DetailView from "./DetailView";
+import { useEmailStoreState } from "../../stores/stateStores";
+import { useMemo } from "react";
+import { filterEmails } from "../../utils/filterEmails";
+import NotFound from "../errors/NotFound";
 
-type Props = {
-  isDialogOpen: boolean;
-  onDialogClose: () => void;
-}
+const EmailView = () => {
+  const { hash } = useLocation();
+  const emailId = location.hash.split("/").pop();
+  if(!emailId) return < NotFound />;
 
+  const {
+    emails,
+    deletedEmails,
+    view,
+    searchQuery,
+    setView,
+    setSearchQuery,
+    handleSelectEmail,
+    handleSelectAll,
+    handleStarEmail,
+    handleMarkAsRead,
+    handleMarkAsUnread,
+    handleDeleteEmail,
+    handleMarkAsSpamEmail,
+    handleArchiveEmail,
+  } = useEmailStoreState();
 
-const EmailView = ({isDialogOpen, onDialogClose}: Props) => {
-  
-  
-  const [searchParams] = useSearchParams();
-  const view = searchParams.get("view") || "inbox";
+  const allSelected = emails.every((email) => email.isSelected);
 
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+  };
 
-  const renderView = [
-    {
-      name: "inbox",
-      view: (
-        <Inbox
-        />
-      ),
-    },
-    { name: "drafts", view: <Drafts /> },
-    { name: "stars", view: (<Stars />) },
-    { name: "spam", view: (<Spam /> )},
-    { name: "bin", view: (<Bin />) },
-    { name: "sent", view: (<Sent />) },
-  ];
+  const filteredEmails = useMemo(()=> filterEmails(emails, searchQuery), [emails, searchQuery])
 
-  const currentView = renderView.find((item) => item.name === view)?.view;
+  const views = {
+    "#inbox": (
+      <Inbox
+        emails={filteredEmails.inbox}
+        allSelected={allSelected}
+        onSelectAll={handleSelectAll}
+        onSelectEmail={handleSelectEmail}
+        onStarEmail={handleStarEmail}
+        onDeleteEmail={handleDeleteEmail}
+        onMarkAsRead={handleMarkAsRead}
+        onMarkAsUnread={handleMarkAsUnread}
+        onArchiveEmail={handleArchiveEmail}
+        onMarkAsSpam={handleMarkAsSpamEmail}
+      />
+    ),
+    "#drafts": (
+      <Drafts
+        emails={filteredEmails.drafts}
+        allSelected={allSelected}
+        onSelectAll={handleSelectAll}
+        onSelectEmail={handleSelectEmail}
+        onStarEmail={handleStarEmail}
+        onDeleteEmail={handleDeleteEmail}
+        onMarkAsRead={handleMarkAsRead}
+        onMarkAsUnread={handleMarkAsUnread}
+        onArchiveEmail={handleArchiveEmail}
+        onMarkAsSpam={handleMarkAsSpamEmail}
+      />
+    ),
+    "#stars": (
+      <Stars
+        emails={filteredEmails.starred}
+        allSelected={allSelected}
+        onSelectAll={handleSelectAll}
+        onSelectEmail={handleSelectEmail}
+        onStarEmail={handleStarEmail}
+        onDeleteEmail={handleDeleteEmail}
+        onMarkAsRead={handleMarkAsRead}
+        onMarkAsUnread={handleMarkAsUnread}
+        onArchiveEmail={handleArchiveEmail}
+        onMarkAsSpam={handleMarkAsSpamEmail}
+      />
+    ),
+    "#spam": (
+      <Spam
+        emails={filteredEmails.spam}
+        allSelected={allSelected}
+        onSelectAll={handleSelectAll}
+        onSelectEmail={handleSelectEmail}
+        onStarEmail={handleStarEmail}
+        onDeleteEmail={handleDeleteEmail}
+        onMarkAsRead={handleMarkAsRead}
+        onMarkAsUnread={handleMarkAsUnread}
+        onArchiveEmail={handleArchiveEmail}
+        onMarkAsSpam={handleMarkAsSpamEmail}
+      />
+    ),
+    "#bin": (
+      <Bin
+        emails={filteredEmails.deleted}
+        allSelected={allSelected}
+        onSelectAll={handleSelectAll}
+        onSelectEmail={handleSelectEmail}
+        onStarEmail={handleStarEmail}
+        onDeleteEmail={handleDeleteEmail}
+        onMarkAsRead={handleMarkAsRead}
+        onMarkAsUnread={handleMarkAsUnread}
+        onArchiveEmail={handleArchiveEmail}
+        onMarkAsSpam={handleMarkAsSpamEmail}
+      />
+    ),
+    "#sent": (
+      <Sent
+        emails={filteredEmails.sent}
+        allSelected={allSelected}
+        onSelectAll={handleSelectAll}
+        onSelectEmail={handleSelectEmail}
+        onStarEmail={handleStarEmail}
+        onDeleteEmail={handleDeleteEmail}
+        onMarkAsRead={handleMarkAsRead}
+        onMarkAsUnread={handleMarkAsUnread}
+        onArchiveEmail={handleArchiveEmail}
+        onMarkAsSpam={handleMarkAsSpamEmail}
+      />
+    ),
+    [emailId]: <DetailView emailId={emailId}  />,
+  };
+
+  const currentView = views[hash] || views[emailId]
 
   return (
     <div className="w-full h-dvh">
-      {/* <EmailHeader
+      <EmailHeader
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
-      /> */}
-      {currentView}
+      />
+      <div>{currentView}</div>
 
-      <ComposeEmail  {...{isDialogOpen, onDialogClose}} />
+      <ComposeEmail />
     </div>
   );
 };
