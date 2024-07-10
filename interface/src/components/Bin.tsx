@@ -1,9 +1,31 @@
-import React from 'react'
+import EmailMenu from "./emailWidgets/EmailMenu";
+import { EmailMenuProps } from "../types";
+import EmptyItem from "./shared/EmptyItem";
 
-const Bin = () => {
+type Props = EmailMenuProps;
+const Bin: React.FC<Props> = ({
+  emails,
+  allSelected,
+  onSelectAll,
+  onSelectEmail,
+  onStarEmail,
+onDeleteEmail,
+onMarkAsRead,
+onMarkAsUnread,
+onArchiveEmail,
+onMarkAsSpam
+}) => {
   return (
-    <div>Bin</div>
-  )
-}
+    <div>
+      {emails.length > 0 ? (
+        <EmailMenu
+          {...{ emails, allSelected, onSelectAll, onSelectEmail, onStarEmail, onDeleteEmail }}
+        />
+      ) : (
+        <EmptyItem />
+      )}
+    </div>
+  );
+};
 
-export default Bin
+export default Bin;
