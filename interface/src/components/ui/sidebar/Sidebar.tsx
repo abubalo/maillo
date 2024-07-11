@@ -2,14 +2,12 @@ import { useState } from "react";
 import { FiMenu, FiSend, FiFileText, FiTrash2 } from "react-icons/fi";
 import SidebarItem from "./SidebarItem";
 import { motion, AnimatePresence } from "framer-motion";
-import { InboxIcon, SpamIcon, WriteIcon } from "../../shared/Icons";
+import { InboxIcon, SpamIcon, StarIcon, WriteIcon } from "../../shared/Icons";
 import Button from "../button/Button";
+import { useDialogStore } from "../../../stores/stateStores";
 
-type Props = {
-  onComposeEmail: () => void;
-};
-
-const Sidebar: React.FC<Props> = ({ onComposeEmail }) => {
+const Sidebar: React.FC = () => {
+  const { openComposeEmail } = useDialogStore();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleSidebar = () => {
@@ -17,7 +15,7 @@ const Sidebar: React.FC<Props> = ({ onComposeEmail }) => {
   };
 
   const handleComposeEmail = () => {
-    onComposeEmail();
+    openComposeEmail();
   };
 
   return (
@@ -43,17 +41,17 @@ const Sidebar: React.FC<Props> = ({ onComposeEmail }) => {
           </h1>
         </div>
         <nav className="mt-8">
-          <div>
+          
             <Button
               type="button"
-              className="font-semibold bg-white rounded-full dark:text-black"
+              className="font-semibold bg-white rounded-full my-4 dark:text-black"
               onClick={handleComposeEmail}
             >
               <span className="flex items-center gap-4 font-semibold">
                 <WriteIcon /> <span>Compose</span>
               </span>
             </Button>
-          </div>
+          
           <SidebarItem
             icon={<InboxIcon />}
             text="Inbox"
@@ -62,6 +60,11 @@ const Sidebar: React.FC<Props> = ({ onComposeEmail }) => {
           <SidebarItem
             icon={<FiSend />}
             text="Sent"
+            isCollapsed={isCollapsed}
+          />
+          <SidebarItem
+            icon={<StarIcon />}
+            text="Stars"
             isCollapsed={isCollapsed}
           />
           <SidebarItem
