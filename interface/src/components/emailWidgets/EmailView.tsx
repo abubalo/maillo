@@ -1,20 +1,18 @@
-import { useLocation } from "react-router-dom";
 import Inbox from "../Inbox";
 import Drafts from "../Drafts";
 import Spam from "../Spam";
 import Sent from "../Sent";
 import Bin from "../Bin";
 import Stars from "../Stars";
-import ComposeEmail from "../ComposeEmail";
 import { useEmailStoreState } from "../../stores/stateStores";
 import { useMemo } from "react";
 import { filterEmails } from "../../utils/filterEmails";
 import NotFound from "../errors/NotFound";
 
-const EmailView = () => {
-  const location = useLocation();
-  const hash = location.hash.substring(1);
-
+type Props = {
+  hash: string;
+};
+const EmailView: React.FC<Props> = ({ hash }) => {
   const {
     emails,
     searchQuery,
@@ -129,7 +127,6 @@ const EmailView = () => {
   return (
     <div className="w-full h-dvh">
       <div>{currentView}</div>
-      <ComposeEmail />
     </div>
   );
 };
