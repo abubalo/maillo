@@ -1,5 +1,4 @@
 import { useLocation } from "react-router-dom";
-import EmailHeader from "./EmailHeader";
 import Inbox from "../Inbox";
 import Drafts from "../Drafts";
 import Spam from "../Spam";
@@ -7,24 +6,18 @@ import Sent from "../Sent";
 import Bin from "../Bin";
 import Stars from "../Stars";
 import ComposeEmail from "../ComposeEmail";
-import DetailView from "./DetailView";
 import { useEmailStoreState } from "../../stores/stateStores";
 import { useMemo } from "react";
 import { filterEmails } from "../../utils/filterEmails";
 import NotFound from "../errors/NotFound";
 
 const EmailView = () => {
-  const { hash } = useLocation();
-  const emailId = location.hash.split("/").pop();
-  if(!emailId) return < NotFound />;
+  const location = useLocation();
+  const hash = location.hash.substring(1);
 
   const {
     emails,
-    deletedEmails,
-    view,
     searchQuery,
-    setView,
-    setSearchQuery,
     handleSelectEmail,
     handleSelectAll,
     handleStarEmail,
@@ -37,14 +30,13 @@ const EmailView = () => {
 
   const allSelected = emails.every((email) => email.isSelected);
 
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
-  };
+  const filteredEmails = useMemo(
+    () => filterEmails(emails, searchQuery),
+    [emails, searchQuery]
+  );
 
-  const filteredEmails = useMemo(()=> filterEmails(emails, searchQuery), [emails, searchQuery])
-
-  const views = {
-    "#inbox": (
+  const views: Record<string, JSX.Element> = {
+    inbox: (
       <Inbox
         emails={filteredEmails.inbox}
         allSelected={allSelected}
@@ -58,7 +50,7 @@ const EmailView = () => {
         onMarkAsSpam={handleMarkAsSpamEmail}
       />
     ),
-    "#drafts": (
+    drafts: (
       <Drafts
         emails={filteredEmails.drafts}
         allSelected={allSelected}
@@ -72,7 +64,7 @@ const EmailView = () => {
         onMarkAsSpam={handleMarkAsSpamEmail}
       />
     ),
-    "#stars": (
+    stars: (
       <Stars
         emails={filteredEmails.starred}
         allSelected={allSelected}
@@ -86,7 +78,7 @@ const EmailView = () => {
         onMarkAsSpam={handleMarkAsSpamEmail}
       />
     ),
-    "#spam": (
+    spam: (
       <Spam
         emails={filteredEmails.spam}
         allSelected={allSelected}
@@ -100,7 +92,7 @@ const EmailView = () => {
         onMarkAsSpam={handleMarkAsSpamEmail}
       />
     ),
-    "#bin": (
+    bin: (
       <Bin
         emails={filteredEmails.deleted}
         allSelected={allSelected}
@@ -114,7 +106,7 @@ const EmailView = () => {
         onMarkAsSpam={handleMarkAsSpamEmail}
       />
     ),
-    "#sent": (
+    sent: (
       <Sent
         emails={filteredEmails.sent}
         allSelected={allSelected}
@@ -128,19 +120,15 @@ const EmailView = () => {
         onMarkAsSpam={handleMarkAsSpamEmail}
       />
     ),
-    [emailId]: <DetailView emailId={emailId}  />,
   };
 
-  const currentView = views[hash] || views[emailId]
+  const currentView = views[hash] || (
+    <NotFound message="error from email view" />
+  );
 
   return (
     <div className="w-full h-dvh">
-      <EmailHeader
-        searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
-      />
       <div>{currentView}</div>
-
       <ComposeEmail />
     </div>
   );
