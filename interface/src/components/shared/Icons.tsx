@@ -1,4 +1,3 @@
-import { MdInbox } from "react-icons/md";
 import { RiDraftLine, RiSpamLine } from "react-icons/ri";
 import {
   FaRegStar,
@@ -6,8 +5,13 @@ import {
   FaPenFancy,
   FaRegEnvelope,
   FaEnvelopeOpenText,
+  FaReply,
 } from "react-icons/fa";
-import { IoTrashBinOutline, IoSettingsOutline } from "react-icons/io5";
+import {
+  IoTrashBinOutline,
+  IoSettingsOutline,
+  IoDocumentTextOutline,
+} from "react-icons/io5";
 import { TbSend } from "react-icons/tb";
 import {
   MdOutlineCreate,
@@ -16,17 +20,23 @@ import {
   MdClose,
   MdLabelImportantOutline,
   MdLabel,
+  MdDeleteOutline,
+  MdInbox,
 } from "react-icons/md";
-import {} from "react-icons/md";
-import { IoMdRefresh } from "react-icons/io";
+import { IoMdRefresh, IoIosOptions } from "react-icons/io";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { CiMinimize1 } from "react-icons/ci";
 import { GiExpand } from "react-icons/gi";
+import { GoTriangleDown } from "react-icons/go";
+import { SlOptionsVertical } from "react-icons/sl";
+import { BsFileEarmarkPptFill } from "react-icons/bs";
+import { TiDocumentText } from "react-icons/ti";
 
 type Props = {
   size?: number;
   className?: string;
 };
+
 export const InboxIcon = ({ size, className }: Props) => (
   <MdInbox size={size} className={className} />
 );
@@ -84,9 +94,7 @@ export const ExpandIcon = ({ size, className }: Props) => (
 export const CloseIcon = ({ size, className }: Props) => (
   <MdClose size={size} className={className} />
 );
-// export const SendIcon = ({ size, className }: Props) => (
-//   <MdSend size={size} className={className} />
-// );
+
 export const AttachmentIcon = ({ size, className }: Props) => (
   <MdAttachFile size={size} className={className} />
 );
@@ -96,6 +104,27 @@ export const LabelOutlineIcon = ({ size, className }: Props) => (
 export const LabelSolidIcon = ({ size, className }: Props) => (
   <MdLabel size={size} className={className} />
 );
-export const EmptyIcon = ({ size, className, text = "Nothing to see here!" }: Props & {text?: string}) => (
-  <div className={className}>{text}</div>
+export const DeleteIcon = ({ size, className }: Props) => (
+  <MdDeleteOutline size={size} className={className} />
+);
+export const ReplyIcon = ({ size, className }: Props) => (
+  <FaReply size={size} className={className} />
+);
+export const TriangleDownIcon = ({ size, className }: Props) => (
+  <GoTriangleDown size={size} className={className} />
+);
+export const OptionsVerticalIcon = ({ size, className }: Props) => (
+  <SlOptionsVertical size={size} className={className} />
+);
+export const SearchOptions = ({ size, className }: Props) => (
+  <IoIosOptions size={size} className={className} />
+);
+export const PowerPointIcon = ({ size, className }: Props) => (
+  <BsFileEarmarkPptFill size={size} className={className} />
+);
+export const GoogleDocIcon = ({ size, className }: Props) => (
+  <IoDocumentTextOutline size={size} className={className} />
+);
+export const DocumentIcon = ({ size, className }: Props) => (
+  <TiDocumentText size={size} className={className} />
 );
