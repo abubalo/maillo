@@ -5,7 +5,7 @@ import Sent from "../Sent";
 import Bin from "../Bin";
 import Stars from "../Stars";
 import { useEmailStoreState } from "../../stores/stateStores";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { filterEmails } from "../../utils/filterEmails";
 import NotFound from "../errors/NotFound";
 
@@ -26,6 +26,20 @@ const EmailView: React.FC<Props> = ({ hash }) => {
     handleArchiveEmail,
   } = useEmailStoreState();
 
+  function capitalizeFirstLetter(text: string) {
+    if (!text) return text;
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+  
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = capitalizeFirstLetter(hash) || "Maillo";
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [hash]);
+  
   const allSelected = emails.every((email) => email.isSelected);
 
   const filteredEmails = useMemo(
