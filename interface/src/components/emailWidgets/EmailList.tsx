@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { StarIcon, StarSolidIcon } from "../shared/Icons";
 import { Email } from "./../../types";
+import { format } from "date-fns";
 
 interface EmailListProps extends Email {
   onSelect: (id: string | number) => void;
@@ -26,6 +27,9 @@ const EmailList: React.FC<EmailListProps> = ({
   onArchiveEmail,
   onMarkAsSpam,
 }) => {
+  const formatDate = (timestamp: number) => {
+    return format(new Date(timestamp * 1000), "MMM d, yyyy h:mm a");
+  };
   const { hash } = useLocation();
 
   const handleCheckboxChange = () => {
@@ -40,11 +44,6 @@ const EmailList: React.FC<EmailListProps> = ({
 
   const fullLink = `/home/${hash}/${detailUrl}`;
 
-  const truncateText =(length = 10) =>{
-// Ten words not characters
-preview.split(" ")
-  }
-
   return (
     <Link
       to={`${fullLink}`}
@@ -54,10 +53,7 @@ preview.split(" ")
           : "font-semibold"
       } `}
     >
-
-      <div>
-        
-      </div>
+      <div></div>
       <div className="flex items-center space-x-2">
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
           <label className="inline-flex items-center">
@@ -70,7 +66,11 @@ preview.split(" ")
           </label>
         </div>
         <div onClick={handleStarEmail}>
-          {isStarred ? <StarSolidIcon className="text-yellow-500"/> : <StarIcon />}
+          {isStarred ? (
+            <StarSolidIcon className="text-yellow-500" />
+          ) : (
+            <StarIcon />
+          )}
         </div>
       </div>
       <div className="w-1/4 truncate">{sender}</div>
@@ -78,7 +78,9 @@ preview.split(" ")
         <div className="truncate">{subject}</div>
         <div className="text-sm text-gray-600 truncate">{preview}</div>
       </div>
-      <div className="w-1/4 text-sm text-right text-gray-500">{timestamp}</div>
+      <div className="w-1/4 text-sm text-right text-gray-500">
+        {formatDate(timestamp)}
+      </div>
     </Link>
   );
 };
