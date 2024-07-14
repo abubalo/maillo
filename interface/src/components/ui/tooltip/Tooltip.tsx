@@ -6,6 +6,7 @@ interface TooltipProps {
   text: string;
   children: React.ReactNode;
   position?: "top" | "bottom" | "left" | "right";
+  distance?: number; // Add distance prop
   className?: string;
 }
 
@@ -13,15 +14,16 @@ const Tooltip: React.FC<TooltipProps> = ({
   text,
   children,
   position = "bottom",
+  distance = 1, // Default distance is 8px
   className = "",
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const positionClasses = {
-    top: "bottom-full left-1/3 transform -translate-x-1/3 mb-1",
-    bottom: "top-full left-1/3 transform -translate-x-1/3 mt-1",
-    left: "right-full top-1/3 transform -translate-y-1/3 mr-1",
-    right: "left-full top-1/3 transform -translate-y-1/3 ml-1",
+    top: `bottom-full left-1/2 transform -translate-x-1/2 mb-${distance}`,
+    bottom: `top-full left-1/2 transform -translate-x-1/2 mt-${distance}`,
+    left: `right-full top-1/2 transform -translate-y-1/2 mr-${distance}`,
+    right: `left-full top-1/2 transform -translate-y-1/2 ml-${distance}`,
   };
 
   return (
@@ -37,7 +39,7 @@ const Tooltip: React.FC<TooltipProps> = ({
             className={twMerge(
               `absolute z-10 ${positionClasses[position]} aspect-square`,
               className
-            )}
+        )}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
