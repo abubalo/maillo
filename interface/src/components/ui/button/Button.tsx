@@ -13,7 +13,7 @@ const Button: React.FC<Props> = ({
 }) => {
   return (
     <button
-      className={twMerge("w-full max-w-max p-4 bg-blue-600 text-white", className)}
+      className={twMerge("w-full  p-4 bg-blue-600 text-white", className)}
       {...rest}
     >
       {children}
