@@ -20,7 +20,6 @@ const Home = () => {
   useEffect(() => {
     if (hash) {
       const [path, emailId] = hash.split("/");
-      console.log(path, emailId);
 
       if (path === "inbox" && emailId) {
         const email = emails.find((email) => email.detailUrl === emailId);
