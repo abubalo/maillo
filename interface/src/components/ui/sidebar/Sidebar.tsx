@@ -1,3 +1,4 @@
+import maillo from "../../../../public/logo/maillo-logo.png";
 import { useState } from "react";
 import { FiMenu, FiSend, FiFileText, FiTrash2 } from "react-icons/fi";
 import SidebarItem from "./SidebarItem";
@@ -21,7 +22,7 @@ const Sidebar: React.FC = () => {
   return (
     <AnimatePresence>
       <motion.div
-        className={`h-screen p-4 overflow-clip transition-all duration-300 ${
+        className={`h-screen sticky top-0 p-4 overflow-clip transition-all duration-300 ${
           isCollapsed ? "w-24 box-border" : "w-80"
         }`}
       >
@@ -32,26 +33,20 @@ const Sidebar: React.FC = () => {
           >
             <FiMenu size={20} />
           </button>
-          <h1
-            className={`text-xl font-bold italic ${
-              isCollapsed ? "hidden" : "block"
-            }`}
-          >
-            Maillo
-          </h1>
+          <img
+            className={` font-bold italic ${isCollapsed ? "hidden" : "block"}`}
+            src={maillo}
+          />
         </div>
         <nav className="mt-8">
-          
-            <Button
-              type="button"
-              className="font-semibold bg-white rounded-full my-4 dark:text-black"
-              onClick={handleComposeEmail}
-            >
-              <span className="flex items-center gap-4 font-semibold">
-                <WriteIcon /> <span>Compose</span>
-              </span>
-            </Button>
-          
+          <Button
+            type="button"
+            className="flex items-center gap-6 my-4 font-semibold bg-white rounded-full dark:text-black"
+            onClick={handleComposeEmail}
+          >
+            <WriteIcon /> <span>Compose</span>
+          </Button>
+
           <SidebarItem
             icon={<InboxIcon />}
             text="Inbox"
