@@ -14,6 +14,7 @@ const Attachments: React.FC<{ attachments: Attachment[] }> = ({
             to={attachment.url}
             className="flex items-center p-2 transition-colors border border-gray-300 rounded-md"
             download
+            target="_blank"
           >
             {getFileIcon(attachment.type)}
             <span>{attachment.name}</span>
