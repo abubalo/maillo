@@ -11,6 +11,7 @@ import {
   IoTrashBinOutline,
   IoSettingsOutline,
   IoDocumentTextOutline,
+  IoArrowBackOutline,
 } from "react-icons/io5";
 import { TbSend } from "react-icons/tb";
 import {
@@ -23,8 +24,11 @@ import {
   MdDeleteOutline,
   MdInbox,
 } from "react-icons/md";
-import { IoMdRefresh, IoIosOptions } from "react-icons/io";
-import { IoMdHelpCircleOutline } from "react-icons/io";
+import {
+  IoMdRefresh,
+  IoIosOptions,
+  IoMdHelpCircleOutline,
+} from "react-icons/io";
 import { CiMinimize1 } from "react-icons/ci";
 import { GiExpand } from "react-icons/gi";
 import { GoTriangleDown } from "react-icons/go";
@@ -127,4 +131,7 @@ export const GoogleDocIcon = ({ size, className }: Props) => (
 );
 export const DocumentIcon = ({ size, className }: Props) => (
   <TiDocumentText size={size} className={className} />
+);
+export const GoBackIcon = ({ size, className }: Props) => (
+  <IoArrowBackOutline  size={size} className={className} />
 );
