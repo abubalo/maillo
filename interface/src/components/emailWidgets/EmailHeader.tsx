@@ -13,12 +13,16 @@ const EmailHeader: React.FC<Props> = ({ searchQuery, onSearchChange }) => {
       <Search {...{ searchQuery, onSearchChange }} />
       <div className="flex items-center gap-8">
         <div className="flex gap-3 text-2xl">
-          <Tooltip text="Help" position="top">
-            <HelpIcon />
-          </Tooltip>
-          <Tooltip text="Settings" position="top">
-            <SettingsIcon />
-          </Tooltip>
+          <button type="button">
+            <Tooltip text="Help">
+              <HelpIcon />
+            </Tooltip>
+          </button>
+          <button type="button" className="">
+            <Tooltip text="Settings">
+              <SettingsIcon />
+            </Tooltip>
+          </button>
         </div>
         <Avatar
           src={
