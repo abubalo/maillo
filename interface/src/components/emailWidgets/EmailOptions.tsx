@@ -15,7 +15,7 @@ const EmailOptions: React.FC<Props> = ({ allSelected }) => {
     handleSelectAll,
     handleDeleteAllEmail,
     handleMarkAllAsRead,
-    handleMarkAllUnread,
+    handleMarkAllAsUnread,
   } = useEmailStoreState();
   const [rotateRefresh, setRotateRefresh] = useState(false);
 
@@ -24,7 +24,7 @@ const EmailOptions: React.FC<Props> = ({ allSelected }) => {
   };
 
   return (
-    <div  className="flex items-center justify-between p-4 pt-8 pb-6 border-gray-300 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/70 dark:from-inherit lg:static lg:w-auto lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/50">
+    <div className="flex items-center justify-between p-4 pt-8 pb-6 border-gray-300 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/70 dark:from-inherit lg:static lg:w-auto lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/50">
       <div className="flex items-center gap-2">
         <input
           type="checkbox"
@@ -57,6 +57,9 @@ const EmailOptions: React.FC<Props> = ({ allSelected }) => {
           >
             <Button type="button" className="" onClick={handleMarkAllAsRead}>
               Mark As Read
+            </Button>
+            <Button type="button" className="" onClick={handleMarkAllAsUnread}>
+              Mark As Unread
             </Button>
             <Button type="button" className="" onClick={handleDeleteAllEmail}>
               Delete All
