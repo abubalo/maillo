@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 
 type FileDropzoneProps = {
   onFilesDrop: (files: File[]) => void;
@@ -20,11 +20,14 @@ const DropPoint: React.FC<FileDropzoneProps> = ({
   multiple = false,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
+    setError(null);
   }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -41,23 +44,37 @@ const DropPoint: React.FC<FileDropzoneProps> = ({
   const processFiles = useCallback(
     (files: FileList) => {
       const acceptedFiles: File[] = [];
+      const errors: string[] = [];
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
 
-        if (
-          acceptedFileTypes.length === 0 ||
-          acceptedFileTypes.includes(file.type)
-        ) {
-          if (file.size <= maxFileSize && acceptedFiles.length < maxFiles) {
-            acceptedFiles.push(file);
-          }
+        if (acceptedFileTypes.length > 0 && !acceptedFileTypes.includes(file.type)) {
+          errors.push(`${file.name}: Unsupported file type.`);
+          continue;
         }
+
+        if (file.size > maxFileSize) {
+          errors.push(`${file.name}: File is too large.`);
+          continue;
+        }
+
+        if (acceptedFiles.length >= maxFiles) {
+          errors.push(`${file.name}: Too many files.`);
+          break;
+        }
+
+        acceptedFiles.push(file);
 
         if (!multiple && acceptedFiles.length === 1) break;
       }
 
-      onFilesDrop(acceptedFiles);
+      if (errors.length > 0) {
+        setError(errors.join(' '));
+      } else {
+        setError(null);
+        onFilesDrop(acceptedFiles);
+      }
     },
     [acceptedFileTypes, maxFileSize, maxFiles, multiple, onFilesDrop]
   );
@@ -81,6 +98,12 @@ const DropPoint: React.FC<FileDropzoneProps> = ({
     [processFiles]
   );
 
+  const handleClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <section
       className={`file-dropzone ${className} ${isDragging ? "dragging" : ""}`}
@@ -90,12 +113,14 @@ const DropPoint: React.FC<FileDropzoneProps> = ({
         padding: "20px",
         textAlign: "center",
         cursor: "pointer",
+        backgroundColor: isDragging ? "#f0f0f0" : "transparent",
         ...style,
       }}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      onClick={handleClick}
     >
       <input
         type="file"
@@ -103,6 +128,7 @@ const DropPoint: React.FC<FileDropzoneProps> = ({
         accept={acceptedFileTypes.join(",")}
         multiple={multiple}
         style={{ display: "none" }}
+        ref={fileInputRef}
         id="file-input"
       />
       <label htmlFor="file-input">
@@ -110,6 +136,7 @@ const DropPoint: React.FC<FileDropzoneProps> = ({
           ? "Drop files here"
           : "Drag & drop files here or click to select"}
       </label>
+      {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
     </section>
   );
 };
