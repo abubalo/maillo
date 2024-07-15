@@ -59,7 +59,7 @@ const Sidebar: React.FC = () => {
           />
           <SidebarItem
             icon={<StarIcon />}
-            text="Stars"
+            text="Starred"
             isCollapsed={isCollapsed}
           />
           <SidebarItem
