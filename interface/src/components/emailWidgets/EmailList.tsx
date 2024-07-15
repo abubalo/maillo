@@ -2,14 +2,9 @@ import { Link, useLocation } from "react-router-dom";
 import { StarIcon, StarSolidIcon } from "../shared/Icons";
 import { Email } from "./../../types";
 import { format } from "date-fns";
+import { useEmailStoreState } from "../../stores/stateStores";
 
-interface EmailListProps extends Email {
-  onSelect: (id: string | number) => void;
-  onStar: (id: string | number) => void;
-  onDelete: (id: string | number) => void;
-}
-
-const EmailList: React.FC<EmailListProps> = ({
+const EmailList: React.FC<Email> = ({
   id,
   subject,
   sender,
@@ -18,28 +13,22 @@ const EmailList: React.FC<EmailListProps> = ({
   isUnread,
   isStarred,
   isSelected,
-  onSelect,
-  onStar,
   detailUrl,
-  onDelete,
-  onMarkAsRead,
-  onMarkAsUnread,
-  onArchiveEmail,
-  onMarkAsSpam,
 }) => {
   const formatDate = (timestamp: number) => {
     return format(new Date(timestamp * 1000), "MMM d, yyyy h:mm a");
   };
   const { hash } = useLocation();
+  const { handleStarEmail, handleSelectEmail } = useEmailStoreState();
 
   const handleCheckboxChange = () => {
-    onSelect(id);
+    handleSelectEmail(id);
   };
 
-  const handleStarEmail = (e: React.MouseEvent) => {
+  const handleStar = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onStar(id);
+    handleStarEmail(id);
   };
 
   const fullLink = `/home/${hash}/${detailUrl}`;
@@ -65,7 +54,7 @@ const EmailList: React.FC<EmailListProps> = ({
             />
           </label>
         </div>
-        <div onClick={handleStarEmail}>
+        <div onClick={handleStar}>
           {isStarred ? (
             <StarSolidIcon className="text-yellow-500" />
           ) : (
