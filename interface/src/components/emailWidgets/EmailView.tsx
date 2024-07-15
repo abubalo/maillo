@@ -76,7 +76,7 @@ const EmailView: React.FC<Props> = ({ hash }) => {
         onMarkAsSpam={handleMarkAsSpamEmail}
       />
     ),
-    stars: (
+    starred: (
       <Stars
         emails={filteredEmails.starred}
         allSelected={allSelected}
