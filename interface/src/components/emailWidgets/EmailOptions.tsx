@@ -10,8 +10,13 @@ type Props = {
   allSelected: boolean;
 };
 
-const EmailOptions: FC<Props> = ({ onSelectAll, allSelected }) => {
-  const {handleSelectAll, handleDeleteAllEmail, handleMarkAllAsRead, handleMarkAllUnread,} = useEmailStoreState()
+const EmailOptions: React.FC<Props> = ({ allSelected }) => {
+  const {
+    handleSelectAll,
+    handleDeleteAllEmail,
+    handleMarkAllAsRead,
+    handleMarkAllUnread,
+  } = useEmailStoreState();
   const [rotateRefresh, setRotateRefresh] = useState(false);
 
   const handleRotateRefresh = () => {
@@ -19,29 +24,28 @@ const EmailOptions: FC<Props> = ({ onSelectAll, allSelected }) => {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/70 dark:from-inherit lg:static lg:w-auto lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/50">
+    <div  className="flex items-center justify-between p-4 pt-8 pb-6 border-gray-300 bg-gradient-to-b from-zinc-200 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/70 dark:from-inherit lg:static lg:w-auto lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/50">
       <div className="flex items-center gap-2">
         <input
           type="checkbox"
-          className="form-checkbox h-5 w-5 text-blue-600"
+          className="w-5 h-5 text-blue-600 form-checkbox"
           checked={allSelected}
-          onChange={onSelectAll}
+          onChange={handleSelectAll}
         />
-        {/* <span className="ml-2">Select All</span> */}
         <Tooltip text="Refresh">
-        <motion.button
-          type="button"
-          onClick={handleRotateRefresh}
-          animate={{ rotate: rotateRefresh ? 180 : 0 }}
-          transition={{ duration: 0.1, ease: "linear" }}
-          onAnimationComplete={() => setRotateRefresh(false)}
-          className="text-xl"
-        >
-          <RefreshIcon />
-        </motion.button>
+          <motion.button
+            type="button"
+            onClick={handleRotateRefresh}
+            animate={{ rotate: rotateRefresh ? 180 : 0 }}
+            transition={{ duration: 0.1, ease: "linear" }}
+            onAnimationComplete={() => setRotateRefresh(false)}
+            className="text-xl"
+          >
+            <RefreshIcon />
+          </motion.button>
         </Tooltip>
       </div>
-      
+
       <AnimatePresence>
         {allSelected ? (
           <motion.div
@@ -49,12 +53,14 @@ const EmailOptions: FC<Props> = ({ onSelectAll, allSelected }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="w-64 flex gap-3 "
+            className="flex w-64 gap-3 "
           >
-            <Button type="button" className="flex">
-              <span>Mark As Read</span>  
+            <Button type="button" className="" onClick={handleMarkAllAsRead}>
+              Mark As Read
             </Button>
-            <Button type="button" className="flex wrap">Delete All</Button>
+            <Button type="button" className="" onClick={handleDeleteAllEmail}>
+              Delete All
+            </Button>
           </motion.div>
         ) : null}
       </AnimatePresence>
