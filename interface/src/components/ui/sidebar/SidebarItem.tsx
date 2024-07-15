@@ -13,7 +13,7 @@ type Props = {
 const SidebarItem = ({ icon, text, isCollapsed, className }: Props) => {
   return (
     <Link
-      to={`?view=${text.toLowerCase()}`}
+      to={`#${text.toLowerCase()}`}
       className={twMerge(
         "flex items-center transition-all duration-300 rounded-md hover:bg-neutral-800/50",
         className
@@ -24,7 +24,7 @@ const SidebarItem = ({ icon, text, isCollapsed, className }: Props) => {
         initial={false}
         animate={{ opacity: isCollapsed ? 0 : 1, width: isCollapsed ? 0 : 'auto' }}
         transition={{ duration: 0.1, ease: "linear" }}
-        className="flex font-semibold overflow-hidden whitespace-nowrap"
+        className="flex overflow-hidden font-semibold whitespace-nowrap"
       >
         {text}
       </motion.span>
