@@ -1,35 +1,40 @@
 import EmailList from "./EmailList";
 import EmailOptions from "./EmailOptions";
-import { EmailMenuProps } from "./../../types";
+import { useEmailStoreState } from "../../stores/stateStores";
+import { Email } from "../../types";
+import EmptyItem from "../shared/EmptyItem";
+import { useLocation } from "react-router-dom";
 
-const EmailMenu: React.FC<EmailMenuProps> = ({
-  emails,
-  allSelected,
-  onSelectAll,
-  onSelectEmail,
-  onStarEmail,
-  onDeleteEmail,
-  onMarkAsRead,
-  onMarkAsUnread,
-  onArchiveEmail,
-  onMarkAsSpam,
-}) => {
+type Props = {
+  emails: Email[];
+  allSelected: boolean;
+};
+const EmailMenu: React.FC<Props> = ({ emails, allSelected }) => {
+  const { hash } = useLocation();
+  const folderName = hash.split("#").pop() as string;
 
-  
+  const { handleSelectAll } = useEmailStoreState();
+
+  const folderMessages: { [key: string]: string } = {
+    inbox: "Your inbox is empty.",
+    spam: "No spam here, enjoy your day!",
+    sent: "You haven’t sent any emails yet.",
+    starred: "You haven’t starred any emails yet.",
+    drafts: "No drafts saved.",
+    bin: "Your bin is empty.",
+  };
+
+  const message = folderMessages[folderName.toLowerCase()] || "No items found";
+
   return (
     <section className="overflow-hidden border border-gray-300 rounded-tl-lg rounded-tr-lg dark:border-neutral-800">
-      <EmailOptions onSelectAll={onSelectAll} allSelected={allSelected} />
+      <EmailOptions onSelectAll={handleSelectAll} allSelected={allSelected} />
       <div className="">
-        {emails.map((email) => (
-          <EmailList
-            key={email.id}
-            {...email}
-            onSelect={onSelectEmail}
-            onStar={onStarEmail}
-            onDelete={onDeleteEmail}
-            {...{onSelectEmail, onStarEmail, onDeleteEmail, onMarkAsRead, onMarkAsUnread, onArchiveEmail, onMarkAsSpam }}
-          />
-        ))}
+        {emails.length > 0 ? (
+          emails.map((email) => <EmailList key={email.id} {...email} />)
+        ) : (
+          <EmptyItem message={message} />
+        )}
       </div>
     </section>
   );
