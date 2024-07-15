@@ -32,7 +32,7 @@ const EmailActions: React.FC<{ email: Email }> = ({ email }) => {
   const onMarkAsSpam = () => handleMarkAsSpamEmail(email.id);
 
   return (
-    <div className="flex items-center justify-between p-4 rounded-tl-md rounded-tr-md bg-neutral-500/40">
+    <div className="top-0 flex items-center justify-between p-4 stciky rounded-tl-md rounded-tr-md bg-neutral-500/40">
       <div className="flex items-center gap-6 text-lg">
         <TooltipButton text="Back to Inbox" onClick={handleGoBack}>
           <GoBackIcon />
@@ -52,10 +52,10 @@ const EmailActions: React.FC<{ email: Email }> = ({ email }) => {
       </div>
       <div className="flex items-center gap-3">
         <span className="text-sm font-bold opacity-70">2 of 28</span>
-        <TooltipButton text="Newer" position="left">
+        <TooltipButton text="Newer" >
           <IoIosArrowBack />
         </TooltipButton>
-        <TooltipButton text="Older" position="left">
+        <TooltipButton text="Older">
           <IoIosArrowForward />
         </TooltipButton>
       </div>
@@ -67,9 +67,8 @@ const TooltipButton: React.FC<{
   text: string;
   onClick?: () => void;
   children: React.ReactNode;
-  position?: "top" | "bottom" | "left" | "right";
-}> = ({ text, onClick, children, position = "top" }) => (
-  <Tooltip text={text} position={position}>
+}> = ({ text, onClick, children }) => (
+  <Tooltip text={text}>
     <button onClick={onClick}>{children}</button>
   </Tooltip>
 );
