@@ -32,7 +32,6 @@ export interface EmailStoreState {
   deletedEmails: Email[];
   searchQuery: string;
   view: string;
-  reply: Email;
   setEmails: (emails: Email[]) => void;
   setView: (view: string) => void;
   setSearchQuery: (query: string) => void;
@@ -42,7 +41,7 @@ export interface EmailStoreState {
   handleMarkAsRead: (id: string | number) => void;
   handleMarkAllAsRead: () => void;
   handleMarkAsUnread: (id: string | number) => void;
-  handleMarkAllUnread: () => void;
+  handleMarkAllAsUnread: () => void;
   handleDeleteEmail: (id: string | number) => void;
   handleDeleteAllEmail: () => void;
   handleUndoDeleteEmail: () => void;
@@ -50,11 +49,10 @@ export interface EmailStoreState {
   handleReplyAll: () => void;
   handleForward: () => void;
   handleSentEmail: (id: string | number) => void;
-  handleBinEmail: (id: string | number) => void;
+  // handleBinEmail: (id: string | number) => void;
   handleMarkAsSpamEmail: (id: string | number) => void;
   handleArchiveEmail: (id: string | number) => void;
 }
-
 
 export const useDialogStore = create<DialogState>((set) => ({
   isComposeEmailOpen: false,
@@ -136,7 +134,7 @@ export const useEmailStoreState = create<EmailStoreState>((set) => ({
     set((state) => ({
       emails: state.emails.map((email) => ({ ...email, isUnread: false })),
     })),
-  handleMarkAllUnread: () =>
+  handleMarkAllAsUnread: () =>
     set((state) => ({
       emails: state.emails.map((email) => ({ ...email, isUnread: true })),
     })),
@@ -157,19 +155,19 @@ export const useEmailStoreState = create<EmailStoreState>((set) => ({
       });
       useDialogStore.setState({ isComposeEmailOpen: true });
     }),
-  // handleReplyAll: () =>
-  //   set((state) => {
-  //     useComposeEmailStore.setState({
-  //       to: [state.reply.sender, ...state.reply.cc ].join(", "),
-  //       subject: `Re ${state.reply.subject}`,
-  //       body: `\n\nOn ${new Date(state.reply.timestamp).toLocaleString()}, ${
-  //         state.reply.sender
-  //       } wrote:\n${state.reply.body}`,
-  //     });
-  //     useDialogStore.setState({ isComposeEmailOpen: true });
-  //   }),
+  handleReplyAll: () =>
+    set((state) => {
+      useComposeEmailStore.setState({
+        to: [state.reply.sender, ...state.reply.cc].join(", "),
+        subject: `Re ${state.reply.subject}`,
+        body: `\n\nOn ${new Date(state.reply.timestamp).toLocaleString()}, ${
+          state.reply.sender
+        } wrote:\n${state.reply.body}`,
+      });
+      useDialogStore.setState({ isComposeEmailOpen: true });
+    }),
 
-  onForward: () => set((state) => {}),
+  handleForward: () => set((state) => {}),
 
   handleDeleteEmail: (id) =>
     set((state) => {
