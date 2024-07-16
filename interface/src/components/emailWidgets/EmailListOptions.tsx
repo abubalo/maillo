@@ -2,9 +2,9 @@ import { useEmailStoreState } from "../../stores/stateStores";
 import {
   ArchiveIcon,
   DeleteIcon,
-  ReadIcon,
   SnoozeIcon,
-  UnreadIcon,
+  MakrUnreadIcon,
+  MarkReadIcon,
 } from "../shared/Icons";
 import ToolTip from "../ui/tooltip/Tooltip";
 
@@ -36,7 +36,7 @@ const EmailListOptions: React.FC<Props> = ({ id, isUnread }) => {
         aria-label="Archive"
       >
         <ToolTip text="Archive">
-          <ArchiveIcon size={20}/>
+          <ArchiveIcon size={20} />
         </ToolTip>
       </button>
       <button
@@ -46,7 +46,7 @@ const EmailListOptions: React.FC<Props> = ({ id, isUnread }) => {
         aria-label="Delete"
       >
         <ToolTip text="Delete">
-          <DeleteIcon size={20}/>
+          <DeleteIcon size={20} />
         </ToolTip>
       </button>
       <button
@@ -58,12 +58,12 @@ const EmailListOptions: React.FC<Props> = ({ id, isUnread }) => {
         aria-label={isUnread ? "Mark as Read" : "Mark as Unread"}
       >
         <ToolTip text={isUnread ? "Mark as Read" : "Mark as Unread"}>
-          {isUnread ? <UnreadIcon size={20}/> : <ReadIcon size={20}/>}
+          {isUnread ? <MakrUnreadIcon size={20} /> : <MarkReadIcon size={20} />}
         </ToolTip>
       </button>
       <button type="button" aria-label="Snooze" className="p-2 text-lg">
         <ToolTip text="Snooze">
-          <SnoozeIcon size={20}/>
+          <SnoozeIcon size={20} />
         </ToolTip>
       </button>
     </div>
