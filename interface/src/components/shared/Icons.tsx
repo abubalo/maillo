@@ -25,6 +25,7 @@ import {
   MdInbox,
   MdOutlineMarkEmailRead,
   MdOutlineMarkEmailUnread,
+  MdLabelImportant,
 } from "react-icons/md";
 import {
   IoMdRefresh,
@@ -148,4 +149,10 @@ export const GoBackIcon = ({ size, className }: Props) => (
 );
 export const FilterIcon = ({ size, className }: Props) => (
   <IoArrowBackOutline size={size} className={className} />
+);
+export const LabelIconOutline = ({ size, className }: Props) => (
+  <MdLabelImportantOutline size={size} className={className} />
+);
+export const LabelIconSolid = ({ size, className }: Props) => (
+  <MdLabelImportant size={size} className={className} />
 );
