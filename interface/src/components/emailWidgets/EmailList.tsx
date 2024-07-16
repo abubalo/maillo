@@ -49,8 +49,6 @@ const EmailList: React.FC<Email> = ({
   return (
     <motion.div
       layout
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
       className={`relative flex items-center space-x-4 px-4 py-2 border-b cursor-pointer border-gray-300 dark:border-neutral-800 ${
         isUnread
           ? "font-bold bg-neutral-50 dark:bg-neutral-800/40"
@@ -59,18 +57,18 @@ const EmailList: React.FC<Email> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex items-center space-x-2">
+      <div className="z-20 flex items-center space-x-2 pointer-events-auto">
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
           <label className="inline-flex items-center">
             <input
               type="checkbox"
-              className="w-5 h-5 text-blue-600 form-checkbox"
+              className="w-5 h-5 text-blue-600 cursor-pointer"
               checked={isSelected}
               onChange={handleCheckboxChange}
             />
           </label>
         </div>
-        <div onClick={handleStar}>
+        <div onClick={handleStar} className="cursor-pointer">
           {isStarred ? (
             <StarSolidIcon className="text-yellow-500" />
           ) : (
@@ -92,14 +90,21 @@ const EmailList: React.FC<Email> = ({
         transition={{ duration: 0.5 }}
         className="relative flex items-center justify-center w-1/5 h-full"
       >
-        <motion.div className="absolute inset-0 text-sm font-semibold text-center text-gray-500">
-          {formatDate(timestamp)}
-        </motion.div>
-        <motion.div className="absolute inset-0 z-20 flex items-center justify-center">
+        <div
+          className={`absolute inset-0 z-30 text-sm font-semibold text-center text-gray-500 ${
+            isHovered ? 'hidden' : 'block'
+          }`}
+        >
+          <span aria-label="timestamp">{formatDate(timestamp)}</span>
+        </div>
+        <div className="absolute inset-0 z-20 flex items-center justify-center">
           {isHovered && <EmailListOptions id={id} isUnread={isUnread} />}
-        </motion.div>
+        </div>
       </motion.div>
-      <Link to={fullLink} className="absolute inset-0 z-10" />
+      <Link
+        to={fullLink}
+        className="absolute inset-0 z-10 pointer-events-auto"
+      />
     </motion.div>
   );
 };
