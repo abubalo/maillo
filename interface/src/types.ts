@@ -6,18 +6,16 @@ export type Attachment = {
   url: string;
 };
 
-
 export type Email = {
-  id: number | string;
+  id: string;
   subject: string;
   sender: string;
   address: string;
   preview: string;
-  timestamp: number | string;
+  timestamp: number;
   isUnread: boolean;
   isStarred: boolean;
   isSelected: boolean;
-  detailUrl?: string;
   isDraft: boolean;
   isSpam: boolean;
   isDeleted: boolean;
@@ -27,7 +25,7 @@ export type Email = {
   cc?: string[];
   bcc?: string[];
   body?: string;
-  inReplyTo: Email[]
+  inReplyTo: string[] | Email[];
 };
 
 export type EmailMenuProps = {
