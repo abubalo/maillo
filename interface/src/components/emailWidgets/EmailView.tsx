@@ -136,7 +136,7 @@ const EmailView: React.FC<Props> = ({ hash }) => {
   const currentView = views[hash] || <NotFound />;
 
   return (
-    <div className="w-full h-dvh">
+    <div className="w-full p-4">
       <div>{currentView}</div>
     </div>
   );
