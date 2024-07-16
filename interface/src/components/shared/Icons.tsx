@@ -13,7 +13,7 @@ import {
   IoDocumentTextOutline,
   IoArrowBackOutline,
 } from "react-icons/io5";
-import { TbSend } from "react-icons/tb";
+import { TbAlarmSnooze, TbSend } from "react-icons/tb";
 import {
   MdOutlineCreate,
   MdOutlineArchive,
@@ -23,6 +23,8 @@ import {
   MdLabel,
   MdDeleteOutline,
   MdInbox,
+  MdOutlineMarkEmailRead,
+  MdOutlineMarkEmailUnread,
 } from "react-icons/md";
 import {
   IoMdRefresh,
@@ -76,6 +78,15 @@ export const ReadIcon = ({ size, className }: Props) => (
 );
 export const UnreadIcon = ({ size, className }: Props) => (
   <FaRegEnvelope size={size} className={className} />
+);
+export const MarkReadIcon = ({ size, className }: Props) => (
+  <MdOutlineMarkEmailRead size={size} className={className} />
+);
+export const MakrUnreadIcon = ({ size, className }: Props) => (
+  <MdOutlineMarkEmailUnread size={size} className={className} />
+);
+export const SnoozeIcon = ({ size, className }: Props) => (
+  <TbAlarmSnooze size={size} className={className} />
 );
 export const ArchiveIcon = ({ size, className }: Props) => (
   <MdOutlineArchive size={size} className={className} />
@@ -133,8 +144,8 @@ export const DocumentIcon = ({ size, className }: Props) => (
   <TiDocumentText size={size} className={className} />
 );
 export const GoBackIcon = ({ size, className }: Props) => (
-  <IoArrowBackOutline  size={size} className={className} />
+  <IoArrowBackOutline size={size} className={className} />
 );
 export const FilterIcon = ({ size, className }: Props) => (
-  <IoArrowBackOutline  size={size} className={className} />
+  <IoArrowBackOutline size={size} className={className} />
 );
