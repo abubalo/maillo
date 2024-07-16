@@ -22,44 +22,48 @@ const Home = () => {
       const [path, emailId] = hash.split("/");
 
       if (path === "inbox" && emailId) {
-        const email = emails.find((email) => email.detailUrl === emailId);
+        const email = emails.find((email) => email.id === emailId);
         setCurrentEmail(email);
       } else if (path === "drafts" && emailId) {
-        const email = emails.find((email) => email.detailUrl === emailId);
+        const email = emails.find((email) => email.id === emailId);
         setCurrentEmail(email);
       } else if (path === "sent" && emailId) {
-        const email = emails.find((email) => email.detailUrl === emailId);
+        const email = emails.find((email) => email.id === emailId);
         setCurrentEmail(email);
       } else if (path === "spam" && emailId) {
-        const email = emails.find((email) => email.detailUrl === emailId);
+        const email = emails.find((email) => email.id === emailId);
         setCurrentEmail(email);
-      } else if (path === "stars" && emailId) {
-        const email = emails.find((email) => email.detailUrl === emailId);
+      } else if (path === "starred" && emailId) {
+        const email = emails.find((email) => email.id === emailId);
         setCurrentEmail(email);
       } else if (path === "bin" && emailId) {
-        const email = emails.find((email) => email.detailUrl === emailId);
+        const email = emails.find((email) => email.id === emailId);
         setCurrentEmail(email);
       } else {
         setCurrentEmail(null);
         <NotFound />;
       }
     }
-  }, [location.hash, emails]);
+  }, [emails, hash]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
   };
 
   return (
-    <main className="flex">
+    <main className="flex h-full overflow-hidden max-h-auto">
       <Sidebar />
-      <div className="w-full">
+      <div className="w-full h-screen">
+        <ComposeEmail />
         <EmailHeader
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
         />
-        {currentEmail ? <DetailView email={currentEmail} /> : <EmailView hash={hash}/>}
-        <ComposeEmail />
+        {currentEmail ? (
+          <DetailView email={currentEmail} />
+        ) : (
+          <EmailView hash={hash} />
+        )}
       </div>
     </main>
   );
