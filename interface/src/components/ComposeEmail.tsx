@@ -73,7 +73,7 @@ const ComposeEmail: React.FC = () => {
     <AnimatePresence>
       {isComposeEmailOpen ? (
         <motion.div
-          className={`fixed bottom-0 right-4 w-full ${
+          className={`fixed bottom-0 right-4 w-full z-40 ${
             editorExpand ? "max-w-5xl" : "max-w-xl"
           }  bg-white border border-gray-300 rounded-t-lg shadow-lg`}
           initial={{ opacity: 0, y: 50 }}
