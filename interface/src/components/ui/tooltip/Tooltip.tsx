@@ -106,7 +106,7 @@ const ToolTip: React.FC<Props> = ({
             transition={{ duration: 0.2 }}
             ref={tooltipRef}
             className={`
-            absolute z-10 px-3 py-2 text-sm font-medium text-white text-nowrap bg-gray-900 rounded-lg shadow-sm 
+            absolute z-10 px-2  text-[12px] font-medium text-white text-nowrap bg-gray-900 rounded-md shadow-sm 
             transition-opacity duration-300 tooltip pointer-events-none select-none
           `}
             style={{
