@@ -1,4 +1,4 @@
-import { Email } from "./../../types";
+import { Email } from "../../types";
 import { FaStar, FaReply, FaReplyAll, FaForward } from "react-icons/fa";
 import { useEmailStoreState } from "../../stores/stateStores";
 import Avatar from "../profile/Avatar";
@@ -48,22 +48,21 @@ const DetailView: React.FC<Props> = ({ email }) => {
   return (
     <section className="w-full h-screen px-4 overflow-hidden rounded-lg">
       <EmailActions email={email} />
-      <div className="flex flex-col h-full min-h-screen p-6 space-y-8 overflow-y-auto bg-neutral-500/20">
-        <div className="rounded-tl-md rounded-tr-md">
+      <div className="flex flex-col p-6 space-y-8 overflow-auto h-svh bg-green-500/20">
+        <div className="h-full rounded-tl-md rounded-tr-md">
           <h2 className="text-2xl">{email.subject}</h2>
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="flex gap-3 ">
+          <div className="flex gap-3">
             <Avatar
               src={`https://ui-avatars.com/api/?name=${email.sender}&background=random`}
               alt={email.sender}
             />
-
             <div>
               <div className="flex gap-1">
                 <p className="font-semibold">{email.sender}</p>
-                <p className="text-sm opacity-70 ">{`<${email.address}>`}</p>
+                <p className="text-sm opacity-70">{`<${email.address}>`}</p>
               </div>
               <div>
                 <span className="text-sm">
@@ -72,8 +71,9 @@ const DetailView: React.FC<Props> = ({ email }) => {
                     <TriangleDownIcon />
                   </button>
                 </span>
-                <Dropdown options>
-                  <p className="text-sm text">
+                <Dropdown>
+                  hhh
+                  <p className="text-sm">
                     To: {email.address}
                     {email.cc && email.cc.length > 0 && (
                       <div>CC: {email.cc.join(", ")}</div>
@@ -86,47 +86,45 @@ const DetailView: React.FC<Props> = ({ email }) => {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-3 ">
+          <div className="flex items-center gap-3">
             <span className="text-sm">{formatDate(email.timestamp)}</span>
             <Tooltip text={email.isStarred ? "Starred" : "Not starred"}>
               <button
                 onClick={onStar}
-                className={` ${
+                className={`${
                   email.isStarred ? "text-yellow-400" : "text-gray-400"
                 } hover:text-yellow-400 transition-colors`}
               >
                 <FaStar />
               </button>
             </Tooltip>
-
             <Tooltip text="reply">
-              <button onClick={onReply} className={` `}>
+              <button onClick={onReply}>
                 <ReplyIcon />
               </button>
             </Tooltip>
             <Tooltip text="More options">
-              <button className={` `}>
+              <button>
                 <OptionsVerticalIcon />
               </button>
             </Tooltip>
           </div>
         </div>
-        <div className="flex flex-col justify-between gap-6 px-4 ">
-          <div
-            className="box-border min-w-full prose min-h-max prose-a:text-blue-500 dark:prose-a:text-yellow-500 prose-a:no-underline dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: sanitizeBody }}
-          />
-        </div>
+
+        <div
+          className="box-border min-w-full prose prose-a:text-blue-500 dark:prose-a:text-yellow-500 prose-a:no-underline dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: sanitizeBody }}
+        />
+
         <div className="space-y-4">
           <div className="flex gap-2">
-            <span className="">Scanned by:</span>
+            <span>Scanned by:</span>
             <Link to="" target="_blank" className="opacity-80">
               ClamAV
             </Link>
           </div>
           {email.attachments && email.attachments.length > 0 && (
             <div className="flex flex-wrap w-full gap-3 mt-8">
-              <Attachments attachments={email.attachments} />
               <Attachments attachments={email.attachments} />
             </div>
           )}
@@ -146,27 +144,27 @@ const DetailView: React.FC<Props> = ({ email }) => {
             </div>
           )}
         </div>
-      </div>
 
-      <div className="flex gap-2">
-        <Button
-          onClick={onReply}
-          className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
-        >
-          <FaReply className="inline mr-2" /> Reply
-        </Button>
-        <Button
-          onClick={onReplyAll}
-          className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
-        >
-          <FaReplyAll className="inline mr-2" /> Reply All
-        </Button>
-        <Button
-          onClick={handleForward}
-          className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
-        >
-          <FaForward className="inline mr-2" /> Forward
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={onReply}
+            className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
+          >
+            <FaReply className="inline mr-2" /> Reply
+          </Button>
+          <Button
+            onClick={onReplyAll}
+            className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
+          >
+            <FaReplyAll className="inline mr-2" /> Reply All
+          </Button>
+          <Button
+            onClick={handleForward}
+            className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
+          >
+            <FaForward className="inline mr-2" /> Forward
+          </Button>
+        </div>
       </div>
     </section>
   );
