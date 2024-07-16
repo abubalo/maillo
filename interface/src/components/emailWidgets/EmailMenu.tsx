@@ -27,7 +27,7 @@ const EmailMenu: React.FC<Props> = ({ emails, allSelected }) => {
   const message = folderMessages[folderName.toLowerCase()] || "No items found";
 
   return (
-    <section className="overflow-hidden border border-gray-300 rounded-tl-lg rounded-tr-lg dark:border-neutral-800">
+    <section className="h-auto overflow-hidden border border-gray-300 rounded-tl-lg rounded-tr-lg dark:border-neutral-800">
       <EmailOptions onSelectAll={handleSelectAll} allSelected={allSelected} />
       <div className="">
         {emails.length > 0 ? (
