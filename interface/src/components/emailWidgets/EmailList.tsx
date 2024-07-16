@@ -42,7 +42,6 @@ const EmailList: React.FC<Email> = ({
           : "font-semibold"
       } `}
     >
-      <div></div>
       <div className="flex items-center space-x-2">
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
           <label className="inline-flex items-center">
