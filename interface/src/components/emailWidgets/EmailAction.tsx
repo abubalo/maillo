@@ -51,7 +51,7 @@ const EmailActions: React.FC<{ email: Email }> = ({ email }) => {
         </TooltipButton>
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-sm font-bold opacity-70">2 of 28</span>
+        <span className="text-sm font-bold opacity-70">1-10 of 67</span>
         <TooltipButton text="Newer" >
           <IoIosArrowBack />
         </TooltipButton>
