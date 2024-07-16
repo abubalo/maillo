@@ -34,11 +34,6 @@ const AdvanceSearchOption: React.FC<Props> = ({ showAdvanceOptions }) => {
     setDoesntIncludeChats,
   } = useAdvanceSearchStore();
 
-  const hasAttachmentOptions = [
-    { label: "Yes", value: "yes" },
-    { label: "No", value: "no" },
-  ];
-
   const sizeOptions = [
     { label: "Larger than", value: "larger" },
     { label: "Smaller than", value: "smaller" },
@@ -69,6 +64,7 @@ const AdvanceSearchOption: React.FC<Props> = ({ showAdvanceOptions }) => {
           <OptionsInput name="To" value={to} onChange={setTo} />
 
           <OptionsInput name="Subject" value={subject} onChange={setSubject} />
+          <OptionsInput name="Has words" value={hasWords} onChange={setHasWords} />
           <OptionsInput
             name="Doesn't have"
             value={doesntHave}
@@ -147,8 +143,10 @@ const AdvanceSearchOption: React.FC<Props> = ({ showAdvanceOptions }) => {
                 name="doesnt-include-chats"
                 id="doesnt-include-chats"
                 className="w-4 h-4"
-                checked={doesntHave === "yes"}
-                onChange={(e) => setDoesntHave(e.target.checked ? "yes" : "no")}
+                checked={doesntIncludeChats === "yes"}
+                onChange={(e) =>
+                  setDoesntIncludeChats(e.target.checked ? "yes" : "no")
+                }
               />
               <label
                 className="text-sm text-nowrap"
@@ -163,10 +161,14 @@ const AdvanceSearchOption: React.FC<Props> = ({ showAdvanceOptions }) => {
             <Button
               type="button"
               className="px-4 py-2 font-medium bg-transparent border rounded-lg w-max"
+              onClick={() => console.log("Filter created")}
             >
               Create filter
             </Button>
-            <Button className="px-4 py-2 font-medium rounded-lg w-max">
+            <Button
+              className="px-4 py-2 font-medium rounded-lg w-max"
+              onClick={() => console.log("Form submitted")}
+            >
               Search
             </Button>
           </div>
