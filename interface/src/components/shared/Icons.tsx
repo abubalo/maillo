@@ -135,3 +135,6 @@ export const DocumentIcon = ({ size, className }: Props) => (
 export const GoBackIcon = ({ size, className }: Props) => (
   <IoArrowBackOutline  size={size} className={className} />
 );
+export const FilterIcon = ({ size, className }: Props) => (
+  <IoArrowBackOutline  size={size} className={className} />
+);
