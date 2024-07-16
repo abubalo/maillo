@@ -30,7 +30,6 @@ const EmailView: React.FC<Props> = ({ hash }) => {
     if (!text) return text;
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
-  
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -39,7 +38,7 @@ const EmailView: React.FC<Props> = ({ hash }) => {
       document.title = previousTitle;
     };
   }, [hash]);
-  
+
   const allSelected = emails.every((email) => email.isSelected);
 
   const filteredEmails = useMemo(
@@ -134,9 +133,7 @@ const EmailView: React.FC<Props> = ({ hash }) => {
     ),
   };
 
-  const currentView = views[hash] || (
-    <NotFound message="error from email view" />
-  );
+  const currentView = views[hash] || <NotFound />;
 
   return (
     <div className="w-full h-dvh">
