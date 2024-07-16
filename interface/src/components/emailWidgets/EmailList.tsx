@@ -1,8 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { StarIcon, StarSolidIcon } from "../shared/Icons";
 import { Email } from "./../../types";
-import { format } from "date-fns";
+import { format, isThisYear, isToday } from "date-fns";
 import { useEmailStoreState } from "../../stores/stateStores";
+import EmailListOptions from "./EmailListOptions";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 const EmailList: React.FC<Email> = ({
   id,
@@ -13,11 +16,21 @@ const EmailList: React.FC<Email> = ({
   isUnread,
   isStarred,
   isSelected,
-  detailUrl,
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   const formatDate = (timestamp: number) => {
-    return format(new Date(timestamp * 1000), "MMM d, yyyy h:mm a");
+    const date = new Date(timestamp * 1000);
+
+    if (isToday(date)) {
+      return format(date, "hh:mm a");
+    } else if (isThisYear(date)) {
+      return format(date, "MMM d");
+    } else {
+      return format(date, "MMM d, yyyy");
+    }
   };
+
   const { hash } = useLocation();
   const { handleStarEmail, handleSelectEmail } = useEmailStoreState();
 
@@ -31,16 +44,20 @@ const EmailList: React.FC<Email> = ({
     handleStarEmail(id);
   };
 
-  const fullLink = `/home/${hash}/${detailUrl}`;
+  const fullLink = `/home/${hash}/${id}`;
 
   return (
-    <Link
-      to={`${fullLink}`}
-      className={`flex items-center space-x-4 p-3 border-b cursor-pointer border-gray-300 dark:border-neutral-800 ${
+    <motion.div
+      layout
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`relative flex items-center space-x-4 px-4 py-2 border-b cursor-pointer border-gray-300 dark:border-neutral-800 ${
         isUnread
           ? "font-bold bg-neutral-50 dark:bg-neutral-800/40"
-          : "font-semibold"
-      } `}
+          : "font-medium"
+      }`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex items-center space-x-2">
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
@@ -61,15 +78,29 @@ const EmailList: React.FC<Email> = ({
           )}
         </div>
       </div>
+
       <div className="w-1/4 truncate">{sender}</div>
       <div className="w-1/2">
         <div className="truncate">{subject}</div>
-        <div className="text-sm text-gray-600 truncate">{preview}</div>
+        <div className="text-sm font-semibold text-gray-600 truncate">
+          {preview}
+        </div>
       </div>
-      <div className="w-1/4 text-sm text-right text-gray-500">
-        {formatDate(timestamp)}
-      </div>
-    </Link>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative flex items-center justify-center w-1/5 h-full"
+      >
+        <motion.div className="absolute inset-0 text-sm font-semibold text-center text-gray-500">
+          {formatDate(timestamp)}
+        </motion.div>
+        <motion.div className="absolute inset-0 z-20 flex items-center justify-center">
+          {isHovered && <EmailListOptions id={id} isUnread={isUnread} />}
+        </motion.div>
+      </motion.div>
+      <Link to={fullLink} className="absolute inset-0 z-10" />
+    </motion.div>
   );
 };
 
