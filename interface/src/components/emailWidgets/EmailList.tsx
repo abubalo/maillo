@@ -1,11 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
-import { StarIcon, StarSolidIcon } from "../shared/Icons";
+import {
+  LabelIconOutline,
+  LabelIconSolid,
+  StarIcon,
+  StarSolidIcon,
+} from "../shared/Icons";
 import { Email } from "./../../types";
 import { format, isThisYear, isToday } from "date-fns";
 import { useEmailStoreState } from "../../stores/stateStores";
 import EmailListOptions from "./EmailListOptions";
 import { useState } from "react";
 import { motion } from "framer-motion";
+// import Attachments from "./Attachment";
 
 const EmailList: React.FC<Email> = ({
   id,
@@ -16,6 +22,8 @@ const EmailList: React.FC<Email> = ({
   isUnread,
   isStarred,
   isSelected,
+  labels,
+  // attachments,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -32,7 +40,8 @@ const EmailList: React.FC<Email> = ({
   };
 
   const { hash } = useLocation();
-  const { handleStarEmail, handleSelectEmail } = useEmailStoreState();
+  const { handleStarEmail, handleSelectEmail, handleMarkAsRead } =
+    useEmailStoreState();
 
   const handleCheckboxChange = () => {
     handleSelectEmail(id);
@@ -56,13 +65,14 @@ const EmailList: React.FC<Email> = ({
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => handleMarkAsRead(id)}
     >
       <div className="z-20 flex items-center space-x-2 pointer-events-auto">
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
           <label className="inline-flex items-center">
             <input
               type="checkbox"
-              className="w-5 h-5 text-blue-600 cursor-pointer"
+              className="w-4 h-4 text-blue-600 cursor-pointer"
               checked={isSelected}
               onChange={handleCheckboxChange}
             />
@@ -75,6 +85,13 @@ const EmailList: React.FC<Email> = ({
             <StarIcon />
           )}
         </div>
+        <div onClick={handleStar} className="cursor-pointer">
+          {labels.length > 0 && labels.includes("Important") ? (
+            <LabelIconSolid className="text-yellow-500" />
+          ) : (
+            <LabelIconOutline />
+          )}
+        </div>
       </div>
 
       <div className="w-1/4 truncate">{sender}</div>
@@ -83,24 +100,33 @@ const EmailList: React.FC<Email> = ({
         <div className="text-sm font-semibold text-gray-600 truncate">
           {preview}
         </div>
+        {/* <div>
+          {attachments && attachments.length > 0 &&
+          attachments ? (
+            <Attachments
+              attachments={attachments}
+              className="mt-2 text-sm rounded-full"
+            />
+          ) : null}
+        </div> */}
       </div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative flex items-center justify-center w-1/5 h-full"
-      >
+      <div className="relative flex items-center justify-center w-1/5 h-full">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0 z-30 flex items-center justify-center bg-inherit"
+        >
+          {isHovered && <EmailListOptions id={id} isUnread={isUnread} />}
+        </motion.div>
         <div
-          className={`absolute inset-0 z-30 text-sm font-semibold text-center text-gray-500 ${
-            isHovered ? 'hidden' : 'block'
+          className={`absolute inset-0 z-20 text-sm font-semibold text-center text-gray-500 ${
+            isHovered ? "hidden" : "block"
           }`}
         >
           <span aria-label="timestamp">{formatDate(timestamp)}</span>
         </div>
-        <div className="absolute inset-0 z-20 flex items-center justify-center">
-          {isHovered && <EmailListOptions id={id} isUnread={isUnread} />}
-        </div>
-      </motion.div>
+      </div>
       <Link
         to={fullLink}
         className="absolute inset-0 z-10 pointer-events-auto"
