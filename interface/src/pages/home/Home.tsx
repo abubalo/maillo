@@ -51,9 +51,9 @@ const Home = () => {
   };
 
   return (
-    <main className="flex h-full overflow-hidden max-h-auto">
+    <main className="flex h-auto min-h-max">
       <Sidebar />
-      <div className="w-full h-screen">
+      <div className="w-full ">
         <ComposeEmail />
         <EmailHeader
           searchQuery={searchQuery}
