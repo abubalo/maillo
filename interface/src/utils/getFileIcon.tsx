@@ -2,7 +2,7 @@ import { MdImage, MdOutlinePictureAsPdf } from "react-icons/md";
 import { GoogleDocIcon, PowerPointIcon } from "../components/shared/Icons";
 import { FaPaperclip } from "react-icons/fa";
 
-export const getFileIcon = (type: string) => {
+export const GetFileIcon = (type: string) => {
   switch (type) {
     case "application/pdf":
       return <MdOutlinePictureAsPdf className="text-red-500" size={24} />;
