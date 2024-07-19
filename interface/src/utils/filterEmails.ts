@@ -13,14 +13,40 @@ export function filterEmails(emails: Email[], searchQueary: string) {
 
   return {
     inbox: filteredEmails.filter(
-      (email) => !email.isDraft && !email.isSpam && !email.isDeleted
+      (email) =>
+        !email.isDraft &&
+        !email.isSpam &&
+        !email.isDeleted &&
+        !email.isArchived &&
+        !email.isPermanentlyDelete
     ),
-    starred: filteredEmails.filter((email) => email.isStarred),
+    starred: filteredEmails.filter(
+      (email) =>
+        email.isStarred &&
+        !email.isDeleted &&
+        !email.isArchived &&
+        !email.isPermanentlyDelete
+    ),
     drafts: filteredEmails.filter(
-      (email) => email.isDraft && !email.isSpam && !email.isDeleted
+      (email) =>
+        email.isDraft &&
+        !email.isSpam &&
+        !email.isDeleted &&
+        !email.isArchived &&
+        !email.isPermanentlyDelete
     ),
-    sent: filteredEmails.filter((email) => !email.isDraft),
-    spam: filteredEmails.filter((email) => email.isSpam && !email.isDeleted),
-    deleted: filteredEmails.filter((email) => email.isDeleted && !email.isSpam),
+    sent: filteredEmails.filter(
+      (email) =>
+        !email.isDraft &&
+        !email.isDeleted &&
+        !email.isArchived &&
+        !email.isPermanentlyDelete
+    ),
+    spam: filteredEmails.filter(
+      (email) => email.isSpam && !email.isDeleted && !email.isPermanentlyDelete
+    ),
+    deleted: filteredEmails.filter(
+      (email) => email.isDeleted && !email.isSpam && !email.isPermanentlyDelete
+    ),
   };
 }
