@@ -1,11 +1,10 @@
 import EmailMenu from "./emailWidgets/EmailMenu";
-import { EmailMenuProps } from "../types";
+import { Email } from "../types";
 
-type Props = EmailMenuProps;
-const Spam: React.FC<Props> = ({ emails, allSelected }) => {
+const Spam: React.FC<{ emails: Email[] }> = ({ emails }) => {
   return (
     <div>
-      <EmailMenu {...{ emails, allSelected }} />
+      <EmailMenu emails={emails}/>
     </div>
   );
 };
