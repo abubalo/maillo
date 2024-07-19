@@ -19,17 +19,12 @@ const EmailActions: React.FC<{ email: Email }> = ({ email }) => {
     navigate(-1)
   }
   const {
-    handleArchiveEmail,
-    handleMarkAsRead,
-    handleMarkAsSpamEmail,
-    handleDeleteEmail,
+    onArchive,
+    onMarkAsRead,
+    onMarkAsSpam,
+    onDeleteEmails,
   } = useEmailStoreState();
 
-  
-  const onArchive = () => handleArchiveEmail(email.id);
-  const onDelete = () => handleDeleteEmail(email.id);
-  const onMarkAsRead = () => handleMarkAsRead(email.id);
-  const onMarkAsSpam = () => handleMarkAsSpamEmail(email.id);
 
   return (
     <div className="top-0 flex items-center justify-between p-4 stciky rounded-tl-md rounded-tr-md bg-neutral-500/40">
@@ -37,16 +32,16 @@ const EmailActions: React.FC<{ email: Email }> = ({ email }) => {
         <TooltipButton text="Back to Inbox" onClick={handleGoBack}>
           <GoBackIcon />
         </TooltipButton>
-        <TooltipButton text="Archive" onClick={onArchive}>
+        <TooltipButton text="Archive" onClick={()=> onArchive([email.id])}>
           <ArchiveIcon />
         </TooltipButton>
-        <TooltipButton text="Report Spam" onClick={onMarkAsSpam}>
+        <TooltipButton text="Report Spam" onClick={()=> onMarkAsSpam([email.id])}>
           <SpamIcon />
         </TooltipButton>
-        <TooltipButton text="Delete" onClick={onDelete}>
+        <TooltipButton text="Delete" onClick={()=> onDeleteEmails([email.id])}>
           <DeleteIcon />
         </TooltipButton>
-        <TooltipButton text="Mark as Read" onClick={onMarkAsRead}>
+        <TooltipButton text="Mark as Read" onClick={()=> onMarkAsRead(email.id)}>
           <MdMarkAsUnread />
         </TooltipButton>
       </div>
