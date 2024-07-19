@@ -12,24 +12,14 @@ import NotFound from "../errors/NotFound";
 type Props = {
   hash: string;
 };
-const EmailView: React.FC<Props> = ({ hash }) => {
-  const {
-    emails,
-    searchQuery,
-    handleSelectEmail,
-    handleSelectAll,
-    handleStarEmail,
-    handleMarkAsRead,
-    handleMarkAsUnread,
-    handleDeleteEmail,
-    handleMarkAsSpamEmail,
-    handleArchiveEmail,
-  } = useEmailStoreState();
 
-  function capitalizeFirstLetter(text: string) {
+const EmailView: React.FC<Props> = ({ hash }) => {
+  const { emails, searchQuery } = useEmailStoreState();
+
+  const capitalizeFirstLetter = (text: string) => {
     if (!text) return text;
     return text.charAt(0).toUpperCase() + text.slice(1);
-  }
+  };
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -39,7 +29,6 @@ const EmailView: React.FC<Props> = ({ hash }) => {
     };
   }, [hash]);
 
-  const allSelected = emails.every((email) => email.isSelected);
 
   const filteredEmails = useMemo(
     () => filterEmails(emails, searchQuery),
@@ -47,98 +36,18 @@ const EmailView: React.FC<Props> = ({ hash }) => {
   );
 
   const views: Record<string, JSX.Element> = {
-    inbox: (
-      <Inbox
-        emails={filteredEmails.inbox}
-        allSelected={allSelected}
-        onSelectAll={handleSelectAll}
-        onSelectEmail={handleSelectEmail}
-        onStarEmail={handleStarEmail}
-        onDeleteEmail={handleDeleteEmail}
-        onMarkAsRead={handleMarkAsRead}
-        onMarkAsUnread={handleMarkAsUnread}
-        onArchiveEmail={handleArchiveEmail}
-        onMarkAsSpam={handleMarkAsSpamEmail}
-      />
-    ),
-    drafts: (
-      <Drafts
-        emails={filteredEmails.drafts}
-        allSelected={allSelected}
-        onSelectAll={handleSelectAll}
-        onSelectEmail={handleSelectEmail}
-        onStarEmail={handleStarEmail}
-        onDeleteEmail={handleDeleteEmail}
-        onMarkAsRead={handleMarkAsRead}
-        onMarkAsUnread={handleMarkAsUnread}
-        onArchiveEmail={handleArchiveEmail}
-        onMarkAsSpam={handleMarkAsSpamEmail}
-      />
-    ),
-    starred: (
-      <Stars
-        emails={filteredEmails.starred}
-        allSelected={allSelected}
-        onSelectAll={handleSelectAll}
-        onSelectEmail={handleSelectEmail}
-        onStarEmail={handleStarEmail}
-        onDeleteEmail={handleDeleteEmail}
-        onMarkAsRead={handleMarkAsRead}
-        onMarkAsUnread={handleMarkAsUnread}
-        onArchiveEmail={handleArchiveEmail}
-        onMarkAsSpam={handleMarkAsSpamEmail}
-      />
-    ),
-    spam: (
-      <Spam
-        emails={filteredEmails.spam}
-        allSelected={allSelected}
-        onSelectAll={handleSelectAll}
-        onSelectEmail={handleSelectEmail}
-        onStarEmail={handleStarEmail}
-        onDeleteEmail={handleDeleteEmail}
-        onMarkAsRead={handleMarkAsRead}
-        onMarkAsUnread={handleMarkAsUnread}
-        onArchiveEmail={handleArchiveEmail}
-        onMarkAsSpam={handleMarkAsSpamEmail}
-      />
-    ),
-    bin: (
-      <Bin
-        emails={filteredEmails.deleted}
-        allSelected={allSelected}
-        onSelectAll={handleSelectAll}
-        onSelectEmail={handleSelectEmail}
-        onStarEmail={handleStarEmail}
-        onDeleteEmail={handleDeleteEmail}
-        onMarkAsRead={handleMarkAsRead}
-        onMarkAsUnread={handleMarkAsUnread}
-        onArchiveEmail={handleArchiveEmail}
-        onMarkAsSpam={handleMarkAsSpamEmail}
-      />
-    ),
-    sent: (
-      <Sent
-        emails={filteredEmails.sent}
-        allSelected={allSelected}
-        onSelectAll={handleSelectAll}
-        onSelectEmail={handleSelectEmail}
-        onStarEmail={handleStarEmail}
-        onDeleteEmail={handleDeleteEmail}
-        onMarkAsRead={handleMarkAsRead}
-        onMarkAsUnread={handleMarkAsUnread}
-        onArchiveEmail={handleArchiveEmail}
-        onMarkAsSpam={handleMarkAsSpamEmail}
-      />
-    ),
+    inbox: <Inbox emails={filteredEmails.inbox} />,
+    drafts: <Drafts emails={filteredEmails.drafts} />,
+    starred: <Stars emails={filteredEmails.starred} />,
+    spam: <Spam emails={filteredEmails.spam} />,
+    sent: <Sent emails={filteredEmails.sent} />,
+    bin: <Bin emails={filteredEmails.deleted} />,
   };
 
   const currentView = views[hash] || <NotFound />;
 
   return (
-    <div className="w-full p-4">
-      <div>{currentView}</div>
-    </div>
+    <div className="w-full h-screen p-4 overflow-scroll">{currentView}</div>
   );
 };
 

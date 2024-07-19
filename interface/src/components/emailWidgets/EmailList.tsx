@@ -23,6 +23,7 @@ const EmailList: React.FC<Email> = ({
   isStarred,
   isSelected,
   labels,
+  isDeleted,
   // attachments,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -40,17 +41,16 @@ const EmailList: React.FC<Email> = ({
   };
 
   const { hash } = useLocation();
-  const { handleStarEmail, handleSelectEmail, handleMarkAsRead } =
-    useEmailStoreState();
+  const { onStarEmail, onSelectEmails, onMarkAsRead } = useEmailStoreState();
 
   const handleCheckboxChange = () => {
-    handleSelectEmail(id);
+    onSelectEmails([id]);
   };
 
   const handleStar = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    handleStarEmail(id);
+    onStarEmail(id);
   };
 
   const fullLink = `/home/${hash}/${id}`;
@@ -65,7 +65,7 @@ const EmailList: React.FC<Email> = ({
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => handleMarkAsRead(id)}
+      onClick={() => onMarkAsRead(id)}
     >
       <div className="z-20 flex items-center space-x-2 pointer-events-auto">
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
@@ -117,7 +117,7 @@ const EmailList: React.FC<Email> = ({
           transition={{ duration: 0.5 }}
           className="absolute inset-0 z-30 flex items-center justify-center bg-inherit"
         >
-          {isHovered && <EmailListOptions id={id} isUnread={isUnread} />}
+          {isHovered && <EmailListOptions {...{ id, isUnread, isDeleted }} />}
         </motion.div>
         <div
           className={`absolute inset-0 z-20 text-sm font-semibold text-center text-gray-500 ${
