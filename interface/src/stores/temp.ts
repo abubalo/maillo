@@ -39,7 +39,7 @@ const attachments: Attachment[] = [
 
 export { attachments };
 
-export const data: Email[] = [
+export const dummyData: Email[] = [
   {
     id: "ayfilrpqn3gl0ba",
     subject: "Weekly Team Meeting",
@@ -54,7 +54,10 @@ export const data: Email[] = [
     isSpam: true,
     isDeleted: false,
     isArchived: false,
-    labels: ["Work"],
+    folder: "",
+    isPermanentlyDelete: false,
+    // labels: ["Work"],
+    labels: ["Important"],
     attachments: [
       {
         id: 1,
@@ -119,6 +122,8 @@ export const data: Email[] = [
     isSpam: false,
     isDeleted: false,
     isArchived: false,
+    folder: "",
+    isPermanentlyDelete: false,
     labels: ["Important"],
     attachments: [
       {
@@ -185,6 +190,8 @@ export const data: Email[] = [
     isSpam: false,
     isDeleted: false,
     isArchived: false,
+    folder: "",
+    isPermanentlyDelete: false,
     labels: ["Personal"],
     attachments: [
       {
@@ -235,6 +242,7 @@ export const data: Email[] = [
 </body>
 </html>
 `,
+
     inReplyTo: [],
   },
   {
@@ -250,8 +258,10 @@ export const data: Email[] = [
     isSelected: false,
     isDraft: false,
     isSpam: true,
-    isDeleted: true,
+    isDeleted: false,
     isArchived: false,
+    folder: "",
+    isPermanentlyDelete: false,
     labels: ["Finance"],
     attachments: [
       {
@@ -302,6 +312,7 @@ export const data: Email[] = [
 </body>
 </html>
 `,
+
     inReplyTo: [],
   },
   {
@@ -318,6 +329,8 @@ export const data: Email[] = [
     isSpam: false,
     isDeleted: false,
     isArchived: false,
+    folder: "",
+    isPermanentlyDelete: false,
     labels: ["Work"],
     attachments: [
       {
@@ -331,7 +344,8 @@ export const data: Email[] = [
     cc: [],
     bcc: [],
     body: String.raw`
-<!DOCTYPE html>
+<!DOCTYPE
+folder: "", html>
 <html>
 <head>
     <title>Project Deadline Extension</title>
@@ -385,9 +399,12 @@ export const data: Email[] = [
     isSpam: false,
     isDeleted: false,
     isArchived: false,
+    folder: "",
+    isPermanentlyDelete: false,
     labels: ["Newsletter"],
     body: `
-      <html>
+      <ht
+      folder: "",ml>
       <head>
         <style>
           body { font-family: Arial, sans-serif; }
@@ -436,9 +453,12 @@ export const data: Email[] = [
     isSpam: false,
     isDeleted: false,
     isArchived: false,
+    folder: "",
+    isPermanentlyDelete: false,
     labels: ["Promotions"],
     body: `
-      <html>
+      <ht
+      folder: "",ml>
       <head>
         <style>
           body { font-family: Arial, sans-serif; background-color: #fff; }
@@ -485,9 +505,12 @@ export const data: Email[] = [
     isSpam: false,
     isDeleted: false,
     isArchived: false,
+    folder: "",
+    isPermanentlyDelete: false,
     labels: ["Events"],
     body: `
-      <html>
+      <ht
+      folder: "",ml>
       <head>
         <style>
           body { font-family: Arial, sans-serif; background-color: #f2f2f2; }
@@ -537,9 +560,12 @@ export const data: Email[] = [
     isSpam: false,
     isDeleted: false,
     isArchived: true,
+    folder: "",
+    isPermanentlyDelete: false,
     labels: ["Updates"],
     body: `
-      <html>
+      <ht
+      folder: "",ml>
       <head>
         <style>
           body { font-family: Arial, sans-serif; }
@@ -590,9 +616,13 @@ export const data: Email[] = [
     isSpam: false,
     isDeleted: false,
     isArchived: false,
-    labels: ["Personal"],
+    folder: "",
+    isPermanentlyDelete: false,
+    // labels: ["Personal"],
+    labels: ["Important"],
     body: `
-      <html>
+      <ht
+      folder: "",ml>
       <head>
         <style>
           body { font-family: Arial, sans-serif; }
@@ -615,6 +645,15 @@ export const data: Email[] = [
       </body>
       </html>
     `,
+    attachments: [
+      {
+        id: 5,
+        name: "archive1.zip",
+        size: 1045678,
+        type: "application/zip",
+        url: "https://www.example.com/attachments/archive1.zip",
+      },
+    ],
     inReplyTo: [],
   },
 ];
