@@ -1,5 +1,5 @@
 import { Email } from "../../types";
-import { FaStar, FaReply, FaReplyAll, FaForward } from "react-icons/fa";
+import { FaStar, FaReply, FaForward } from "react-icons/fa";
 import { useEmailStoreState } from "../../stores/stateStores";
 import Avatar from "../profile/Avatar";
 import {
@@ -22,7 +22,7 @@ type Props = {
 };
 
 const DetailView: React.FC<Props> = ({ email }) => {
-  const { handleStarEmail, handleReply, handleForward } = useEmailStoreState();
+  const { onStarEmail, onReply, onForward } = useEmailStoreState();
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -36,19 +36,10 @@ const DetailView: React.FC<Props> = ({ email }) => {
     USE_PROFILES: { html: true },
   });
 
-  const onReply = () => {
-    handleReply();
-  };
-  const onReplyAll = () => {};
-
-  const onStar = () => {
-    handleStarEmail(email.id);
-  };
-
   return (
-    <section className="w-full h-screen px-4 overflow-hidden rounded-lg">
+    <section className="w-full min-h-screen px-4 rounded-lg">
       <EmailActions email={email} />
-      <div className="flex flex-col p-6 space-y-8 overflow-auto h-svh bg-green-500/20">
+      <div className="box-border flex flex-col h-screen p-6 space-y-8 overflow-scroll bg-neutral-500/10">
         <div className="h-full rounded-tl-md rounded-tr-md">
           <h2 className="text-2xl">{email.subject}</h2>
         </div>
@@ -60,9 +51,9 @@ const DetailView: React.FC<Props> = ({ email }) => {
               alt={email.sender}
             />
             <div>
-              <div className="flex gap-1">
+              <div className="flex gap-1 text-black ">
                 <p className="font-semibold">{email.sender}</p>
-                <p className="text-sm opacity-70">{`<${email.address}>`}</p>
+                <p className="text-sm opacity-80">{`<${email.address}>`}</p>
               </div>
               <div>
                 <span className="text-sm">
@@ -90,7 +81,7 @@ const DetailView: React.FC<Props> = ({ email }) => {
             <span className="text-sm">{formatDate(email.timestamp)}</span>
             <Tooltip text={email.isStarred ? "Starred" : "Not starred"}>
               <button
-                onClick={onStar}
+                onClick={() => onStarEmail(email.id)}
                 className={`${
                   email.isStarred ? "text-yellow-400" : "text-gray-400"
                 } hover:text-yellow-400 transition-colors`}
@@ -99,7 +90,7 @@ const DetailView: React.FC<Props> = ({ email }) => {
               </button>
             </Tooltip>
             <Tooltip text="reply">
-              <button onClick={onReply}>
+              <button onClick={() => onReply(email.id)}>
                 <ReplyIcon />
               </button>
             </Tooltip>
@@ -112,7 +103,7 @@ const DetailView: React.FC<Props> = ({ email }) => {
         </div>
 
         <div
-          className="box-border min-w-full prose prose-a:text-blue-500 dark:prose-a:text-yellow-500 prose-a:no-underline dark:prose-invert"
+          className="box-border min-w-full prose prose-p:text-slate-700 prose-a:text-back-500 dark:prose-a:text-yellow-500 prose-a:no-underline dark:prose-p:text-white dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: sanitizeBody }}
         />
 
@@ -147,19 +138,14 @@ const DetailView: React.FC<Props> = ({ email }) => {
 
         <div className="flex gap-2">
           <Button
-            onClick={onReply}
+            onClick={() => onReply(email.id)}
             className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
           >
             <FaReply className="inline mr-2" /> Reply
           </Button>
+
           <Button
-            onClick={onReplyAll}
-            className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
-          >
-            <FaReplyAll className="inline mr-2" /> Reply All
-          </Button>
-          <Button
-            onClick={handleForward}
+            onClick={() => onForward(email.id)}
             className="px-4 py-2 transition-colors rounded-md text-nowrap w-min hover:bg-blue-600"
           >
             <FaForward className="inline mr-2" /> Forward
