@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { Email } from "../types";
-import { data } from "./data";
+import { Attachment, Email } from "../types";
+import { dummyData } from "./temp";
 
 interface DialogState {
   isComposeEmailOpen: boolean;
@@ -8,21 +8,15 @@ interface DialogState {
   closeComposeEmail: () => void;
 }
 
-interface AttachmentFile {
-  name: string;
-  file: File;
-  type: string;
-}
-
 export interface ComposeEmailState {
   to: string;
   subject: string;
   body: string;
-  attachments: AttachmentFile[];
+  attachments: Attachment[];
   setTo: (to: string) => void;
   setSubject: (subject: string) => void;
   setBody: (body: string) => void;
-  addAttachments: (attachments: AttachmentFile[]) => void;
+  addAttachments: (attachments: Attachment[]) => void;
   removeAttachment: (index: number) => void;
   clearAttachments: () => void;
 }
@@ -32,26 +26,23 @@ export interface EmailStoreState {
   deletedEmails: Email[];
   searchQuery: string;
   view: string;
+  allSelected: boolean;
   setEmails: (emails: Email[]) => void;
   setView: (view: string) => void;
   setSearchQuery: (query: string) => void;
-  handleSelectEmail: (id: string | number) => void;
-  handleSelectAll: () => void;
-  handleStarEmail: (id: string | number) => void;
-  handleMarkAsRead: (id: string | number) => void;
-  handleMarkAllAsRead: () => void;
-  handleMarkAsUnread: (id: string | number) => void;
-  handleMarkAllAsUnread: () => void;
-  handleDeleteEmail: (id: string | number) => void;
-  handleDeleteAllEmail: () => void;
-  handleUndoDeleteEmail: () => void;
-  handleReply: () => void;
-  handleReplyAll: () => void;
-  handleForward: () => void;
-  handleSentEmail: (id: string | number) => void;
-  // handleBinEmail: (id: string | number) => void;
-  handleMarkAsSpamEmail: (id: string | number) => void;
-  handleArchiveEmail: (id: string | number) => void;
+  onSelectEmails: (ids: string[]) => void;
+  toggleAllSelected: () => void;
+  onStarEmail: (id: string) => void;
+  onMarkAsRead: (id: string) => void;
+  onMarkAsUnread: (id: string) => void;
+  onDeleteEmails: (ids: string[]) => void;
+  onUndoDeleteEmail: () => void;
+  onReply: (id: string) => void;
+  onForward: (id: string) => void;
+  onSentEmail: (id: string) => void;
+  onMarkAsSpam: (ids: string[]) => void;
+  onArchive: (ids: string[]) => void;
+  onPermanentDelete: (ids: string[]) => void;
 }
 
 type AdvanceOptiosStore = {
@@ -119,131 +110,132 @@ export const useAdvanceSearchStore = create<AdvanceOptiosStore>((set) => ({
   setHasWords: (hasWords) => set({ hasWords }),
   setDoesntHave: (doesntHave) => set({ doesntHave }),
   setSize: (size) => set({ size }),
-  setByteOption: (byteOption) => set({byteOption}),
+  setByteOption: (byteOption) => set({ byteOption }),
   setDateWithin: (dateWithin) => set({ dateWithin }),
   setHasAttachment: (hasAttachment) => set({ hasAttachment }),
   setDoesntIncludeChats: (doesntIncludeChats) => set({ doesntIncludeChats }),
 }));
 
 export const useEmailStoreState = create<EmailStoreState>((set) => ({
-  emails: data,
+  emails: dummyData,
   deletedEmails: [],
   view: "inbox",
   searchQuery: "",
+  allSelected: false,
   setEmails: (emails) => set({ emails }),
   setView: (view) => set({ view }),
   setSearchQuery: (query) => set({ searchQuery: query }),
-  handleSelectEmail: (id) =>
-    set((state) => ({
-      emails: state.emails.map((email) =>
-        email.id === id ? { ...email, isSelected: !email.isSelected } : email
-      ),
-    })),
-  handleSelectAll: () =>
+
+  onSelectEmails: (ids) =>
     set((state) => {
-      const allSelected = state.emails.every((email) => email.isSelected);
+      const updatedEmails = state.emails.map((email) =>
+        ids.includes(email.id)
+          ? { ...email, isSelected: !email.isSelected }
+          : email
+      );
       return {
+        emails: updatedEmails,
+        allSelected: updatedEmails.every((email) => email.isSelected),
+      };
+    }),
+
+  toggleAllSelected: () =>
+    set((state) => {
+      const newAllSelected = !state.allSelected;
+      return {
+        allSelected: newAllSelected,
         emails: state.emails.map((email) => ({
           ...email,
-          isSelected: !allSelected,
+          isSelected: newAllSelected,
         })),
       };
     }),
 
-  handleStarEmail: (id) =>
+  onStarEmail: (id) =>
     set((state) => ({
       emails: state.emails.map((email) =>
         email.id === id ? { ...email, isStarred: !email.isStarred } : email
       ),
     })),
-  handleSentEmail: (id) =>
+
+  onSentEmail: (id) =>
     set((state) => ({
       emails: state.emails.map((email) =>
-        email.id === id
-          ? { ...email, isDraft: false, isArchived: false, isDeleted: false }
-          : email
+        email.id === id ? { ...email, isDraft: false } : email
       ),
     })),
-  handleMarkAsRead: (id) =>
+
+  onMarkAsRead: (id) =>
     set((state) => ({
       emails: state.emails.map((email) =>
         email.id === id ? { ...email, isUnread: false } : email
       ),
     })),
-  handleMarkAsUnread: (id) =>
+
+  onMarkAsUnread: (id) =>
     set((state) => ({
       emails: state.emails.map((email) =>
         email.id === id ? { ...email, isUnread: true } : email
       ),
     })),
-  handleMarkAllAsRead: () =>
-    set((state) => ({
-      emails: state.emails.map((email) => ({ ...email, isUnread: false })),
-    })),
-  handleMarkAllAsUnread: () =>
-    set((state) => ({
-      emails: state.emails.map((email) => ({ ...email, isUnread: true })),
-    })),
-  handleMarkAsSpamEmail: (id) =>
+
+  onMarkAsSpam: (ids) =>
     set((state) => ({
       emails: state.emails.map((email) =>
-        email.id === id ? { ...email, isSpam: true, isDeleted: false } : email
+        ids.includes(email.id)
+          ? { ...email, isSpam: true, isDeleted: false }
+          : email
       ),
     })),
-  handleReply: () =>
+
+  onReply: (id) =>
     set((state) => {
-      useComposeEmailStore.setState({
-        to: state.reply.sender,
-        subject: `Re ${state.reply.subject}`,
-        body: `\n\nOn ${new Date(state.reply.timestamp).toLocaleString()}, ${
-          state.reply.sender
-        } wrote:\n${state.reply.body}`,
-      });
-      useDialogStore.setState({ isComposeEmailOpen: true });
-    }),
-  handleReplyAll: () =>
-    set((state) => {
-      useComposeEmailStore.setState({
-        to: [state.reply.sender, ...state.reply.cc].join(", "),
-        subject: `Re ${state.reply.subject}`,
-        body: `\n\nOn ${new Date(state.reply.timestamp).toLocaleString()}, ${
-          state.reply.sender
-        } wrote:\n${state.reply.body}`,
-      });
-      useDialogStore.setState({ isComposeEmailOpen: true });
+      const emailToReply = state.emails.find((email) => email.id === id);
+      if (emailToReply) {
+        useComposeEmailStore.setState({
+          to: emailToReply.sender,
+          subject: `Re: ${emailToReply.subject}`,
+          body: `\n\nOn ${new Date(emailToReply.timestamp).toLocaleString()}, ${
+            emailToReply.sender
+          } wrote:\n${emailToReply.body}`,
+        });
+        useDialogStore.setState({ isComposeEmailOpen: true });
+      }
     }),
 
-  handleForward: () => set((state) => {}),
-
-  handleDeleteEmail: (id) =>
+  onForward: (id) =>
     set((state) => {
-      const emailToDelete = state.emails.find((email) => email.id === id);
-      return emailToDelete
-        ? {
-            emails: state.emails.map((email) =>
-              email.id === id
-                ? { ...email, isDeleted: true, isSpam: false, isDraft: false }
-                : email
-            ),
-            deletedEmails: [...state.deletedEmails, emailToDelete],
-          }
-        : state;
+      const emailToForward = state.emails.find((email) => email.id === id);
+      if (emailToForward) {
+        useComposeEmailStore.setState({
+          to: "",
+          subject: `Fwd: ${emailToForward.subject}`,
+          body: `\n\nOn ${new Date(
+            emailToForward.timestamp
+          ).toLocaleString()}, ${emailToForward.sender} wrote:\n${
+            emailToForward.body
+          }`,
+        });
+        useDialogStore.setState({ isComposeEmailOpen: true });
+      }
     }),
-  handleDeleteAllEmail: () =>
-    set((state) => {
-      const emailsToDelete = state.emails.map((email) => ({
-        ...email,
-        isDeleted: true,
-        isSpam: false,
-        isDraft: false,
-      }));
 
+  onDeleteEmails: (ids) =>
+    set((state) => {
+      const emailsToDelete = state.emails.filter((email) =>
+        ids.includes(email.id)
+      );
+      const updatedEmails = state.emails.map((email) =>
+        ids.includes(email.id) ? { ...email, isDeleted: true } : email
+      );
       return {
-        emails: emailsToDelete,
-        deletedEmails: [...state.deletedEmails, ...state.emails],
+        emails: updatedEmails,
+        deletedEmails: [...state.deletedEmails, ...emailsToDelete],
+        allSelected: updatedEmails.every((email) => email.isSelected),
       };
     }),
-  handleUndoDeleteEmail: () =>
+
+  onUndoDeleteEmail: () =>
     set((state) => {
       const lastDeletedEmail =
         state.deletedEmails[state.deletedEmails.length - 1];
@@ -259,10 +251,26 @@ export const useEmailStoreState = create<EmailStoreState>((set) => ({
         ),
       };
     }),
-  handleArchiveEmail: (id) =>
+
+  onArchive: (ids) =>
     set((state) => ({
       emails: state.emails.map((email) =>
-        email.id === id ? { ...email, isArchived: true } : email
+        ids.includes(email.id) ? { ...email, isArchived: true } : email
       ),
     })),
+
+  onPermanentDelete: (ids) =>
+    set((state) => {
+      const emailsToDelete = state.emails.filter((email) =>
+        ids.includes(email.id)
+      );
+      return {
+        emails: state.emails.map((email) =>
+          ids.includes(email.id)
+            ? { ...email, isPermanentlyDeleted: true }
+            : email
+        ),
+        deletedEmails: [...state.deletedEmails, ...emailsToDelete],
+      };
+    }),
 }));
