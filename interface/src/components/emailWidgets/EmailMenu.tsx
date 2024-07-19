@@ -1,19 +1,14 @@
 import EmailList from "./EmailList";
 import EmailOptions from "./EmailOptions";
-import { useEmailStoreState } from "../../stores/stateStores";
-import { Email } from "../../types";
 import EmptyItem from "../shared/EmptyItem";
 import { useLocation } from "react-router-dom";
+import { Email } from "../../types";
 
-type Props = {
-  emails: Email[];
-  allSelected: boolean;
-};
-const EmailMenu: React.FC<Props> = ({ emails, allSelected }) => {
+const EmailMenu: React.FC<{ emails: Email[] }> = ({ emails }) => {
   const { hash } = useLocation();
   const folderName = hash.split("#").pop() as string;
 
-  const { handleSelectAll } = useEmailStoreState();
+  console.log(emails);
 
   const folderMessages: { [key: string]: string } = {
     inbox: "Your inbox is empty.",
@@ -28,7 +23,7 @@ const EmailMenu: React.FC<Props> = ({ emails, allSelected }) => {
 
   return (
     <section className="h-auto overflow-hidden border border-gray-300 rounded-tl-lg rounded-tr-lg dark:border-neutral-800">
-      <EmailOptions onSelectAll={handleSelectAll} allSelected={allSelected} />
+      <EmailOptions />
       <div className="">
         {emails.length > 0 ? (
           emails.map((email) => <EmailList key={email.id} {...email} />)
