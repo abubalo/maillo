@@ -51,9 +51,10 @@ const EmailListOptions: React.FC<Props> = ({ id, isUnread, isDeleted }) => {
       </button>
       <button
         type="button"
-        onClick={(e) =>
-          handleClick(e, isDeleted ? onPermanentDelete : onDeleteEmails, id)
-        }
+        onClick={(e) => {
+          alert("isDeleted:", isDeleted);
+          handleClick(e, isDeleted ? onPermanentDelete : onDeleteEmails, id);
+        }}
         className="p-2 text-lg"
         aria-label="Delete"
       >
