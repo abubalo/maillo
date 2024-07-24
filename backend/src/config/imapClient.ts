@@ -14,15 +14,20 @@ export async function getSecureImapClient(): Promise<ImapFlow> {
     try {
       await Promise.race([
         client.connect(),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Connection timeout")), CONNECT_TIMEOUT)
-        )
+        new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error("Connection timeout")),
+            CONNECT_TIMEOUT
+          )
+        ),
       ]);
       logger.info("Connected to IMAP server at localhost:993");
     } catch (error) {
       logger.error("Failed to connect to IMAP server", { error });
       if (error instanceof Error) {
-        throw new ImapConnectionError("Failed to connect to IMAP server", { cause: error });
+        throw new ImapConnectionError("Failed to connect to IMAP server", {
+          cause: error,
+        });
       } else {
         throw new ImapConnectionError("Failed to connect to IMAP server");
       }
@@ -44,9 +49,11 @@ export async function closeImapClient(): Promise<void> {
 }
 
 class ImapConnectionError extends Error {
-  constructor(message: string, options?: ErrorOptions) {
-    super(message, options);
-    this.name = 'ImapConnectionError';
+  cause: unknown;
+  constructor(message: string, cause?: unknown) {
+    super(message);
+    this.name = "ImapConnectionError";
+    this.cause = cause;
   }
 }
 
