@@ -48,7 +48,7 @@ export async function closeImapClient(): Promise<void> {
   }
 }
 
-class ImapConnectionError extends Error {
+export class ImapConnectionError extends Error {
   cause: unknown;
   constructor(message: string, cause?: unknown) {
     super(message);
