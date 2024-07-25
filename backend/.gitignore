@@ -83,6 +83,8 @@ bower_components
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+bun.lockb
+*.lockb
 
 # SASS/SCSS cache
 .sass-cache/
@@ -140,3 +142,6 @@ dist/
 
 # TypeScript cache
 *.tsbuildinfo
+
+# EC2 Ubutuntu key-pair
+*.pem
