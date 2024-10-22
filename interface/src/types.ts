@@ -1,3 +1,5 @@
+
+
 export type Attachment = {
   id: number | string;
   name: string;
@@ -18,25 +20,27 @@ export type Email = {
   isSelected: boolean;
   isDraft: boolean;
   isSpam: boolean;
-  isDeleted: boolean;
   isArchived: boolean;
+  isDeleted: boolean;
+  isPermanentlyDelete: boolean;
   labels: string[];
   attachments?: Attachment[];
   cc?: string[];
   bcc?: string[];
   body?: string;
-  inReplyTo: string[] | Email[];
+  inReplyTo: Email[];
+  folder: string;
 };
 
-export type EmailMenuProps = {
-  emails: Email[];
-  allSelected: boolean;
-  onSelectAll: () => void;
-  onSelectEmail: (id: number | string) => void;
-  onStarEmail: (id: string | number) => void;
-  onDeleteEmail: (id: string | number) => void;
-  onMarkAsRead: (id: string | number) => void;
-  onMarkAsUnread: (id: string | number) => void;
-  onArchiveEmail: (id: string | number) => void;
-  onMarkAsSpam: (id: string | number) => void;
-};
+// export type EmailMenuProps = {
+//   emails: Email[];
+//   allSelected: boolean;
+//   onSelectAll: () => void;
+//   onSelectEmail: (id: string) => void;
+//   onStarEmail: (id: string) => void;
+//   onDeleteEmail: (id: string) => void;
+//   onMarkAsRead: (id: string) => void;
+//   onMarkAsUnread: (id: string) => void;
+//   onArchiveEmail: (id: string) => void;
+//   onMarkAsSpam: (id: string) => void;
+// };
