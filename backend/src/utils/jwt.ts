@@ -1,7 +1,7 @@
 
 import * as jwt from 'jsonwebtoken';
 import { User } from '../types';
-import { getUserById } from '@/services/auth.service';
+import { getUserById } from '@/services/user.service';
 import { env } from '@/config/env';
 
 type ErrorType = 'TOKEN_EXPIRED' | 'INVALID_PAYLOAD' | 'USER_NOT_FOUND' | 'TOKEN_INVALID';
