@@ -1,10 +1,10 @@
-import { cleanEnv, num, str } from "envalid";
-import {config} from "dotenv"
+import { bool, cleanEnv, num, str } from "envalid";
+import { config } from "dotenv";
 
 config();
 
 export const env = cleanEnv(process.env, {
-  PORT: str(),
+  PORT: num(),
   JWT_SECRET: str(),
   MONGODB_URL: str(),
   SMPT_HOST: str(),
@@ -17,4 +17,7 @@ export const env = cleanEnv(process.env, {
   AQUIRED_TIMEOUT: num(),
   IDLE_TIMEOUT: num(),
   SESSION_MAX_AGE: num(),
+  IMAP_HOST: str({default: "localhost"}),
+  IMAP_SECURE: bool(),
+  IMAP_PORT: num(),
 });
