@@ -17,7 +17,9 @@ export const env = cleanEnv(process.env, {
   AQUIRED_TIMEOUT: num(),
   IDLE_TIMEOUT: num(),
   SESSION_MAX_AGE: num(),
-  IMAP_HOST: str({default: "localhost"}),
+  IMAP_HOST: str({ default: "localhost" }),
   IMAP_SECURE: bool(),
   IMAP_PORT: num(),
+  REDIS_UPSTACH_URL: str(),
+  REDIS_CACHE_TTL: num(),
 });
