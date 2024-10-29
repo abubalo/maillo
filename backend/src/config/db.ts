@@ -8,7 +8,7 @@ export async function connectDB(): Promise<void> {
       retryWrites: true,
       w: "majority",
     });
-    console.log(`Connected to MongoDB at ${env.MONGODB_URL}`);
+    Logging.log(`Connected to MongoDB`);
   } catch (error) {
     Logging.error(`Unable to establish Database Connection: ${error}`);
     throw error;
