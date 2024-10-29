@@ -1,33 +1,9 @@
-import { AddressObject } from "mailparser";
 import { userSchema } from "./models/user.model";
-import { Document, InferSchemaType } from "mongoose";
+import { InferSchemaType, ObjectId } from "mongoose";
 
-export type User = Partial<Omit<InferSchemaType<typeof userSchema>, '$' | '__v'>> & Document;
+export type User = InferSchemaType<typeof userSchema> & { _id: ObjectId };
 
-export type Folder = "INBOX" | "DRAFTS" | "SENT" | "SPAM" | "TRASH";
-
-export type _Email = {
-  id: number | string;
-  subject: string;
-  sender: string | AddressObject | AddressObject[];
-  address: string | AddressObject | AddressObject[];
-  preview: string;
-  timestamp: number;
-  isUnread: boolean;
-  isStarred: boolean;
-  isSelected: boolean;
-  detailUrl?: string;
-  isDraft: boolean;
-  isSpam: boolean;
-  isDeleted: boolean;
-  isArchived: boolean;
-  labels: string[];
-  attachments?: Attachment[];
-  cc?: string[];
-  bcc?: string[];
-  body?: string;
-  inReplyTo?: string | string[];
-};
+export type Folder = "INBOX" | "DRAFTS" | "SENT" | "SPAM" | "TRASH" | "JUNK";
 
 export interface Email<T = any> {
   id: string;
@@ -49,7 +25,7 @@ export interface Email<T = any> {
   body: string;
 
   // Added states
-  isUnread: boolean;
+  isRead: boolean;
   isStarred: boolean;
   isSelected: boolean;
   isDraft: boolean;
