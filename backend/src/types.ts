@@ -1,12 +1,15 @@
+import { AddressObject } from "mailparser";
 import { userSchema } from "./models/user.model";
 import { InferSchemaType, ObjectId } from "mongoose";
 
 export type User = InferSchemaType<typeof userSchema> & { _id: ObjectId };
 
-export type Folder = "INBOX" | "DRAFTS" | "SENT" | "SPAM" | "TRASH" | "JUNK";
+export type Folder = "INBOX" | "Draft" | "Sent" | "Spam" | "Archive" | "Trash";
 
 export interface Email<T = any> {
   id: string;
+  headers: T;
+  messageId?: string;
   subject: string;
   sender: string;
   recipients: {
@@ -14,15 +17,16 @@ export interface Email<T = any> {
     cc: string;
     bcc: string;
   };
-  preview: string;
-  timestamp: number;
+  text: string;
+  body: string;
+  date?: Date;
   flags: Set<string>;
-  labels: string[];
+  labels?: string[];
   attachments: Attachment[];
   inReplyTo?: string[] | string;
-  headers: T;
+  replyTo?: AddressObject;
   priority?: "low" | "high" | "normal";
-  body: string;
+  references?: string | string[];
 
   // Added states
   isRead: boolean;
