@@ -1,0 +1,3 @@
+mail._domainkey	IN	TXT	( "v=DKIM1; h=sha256; k=rsa; "
+	  "p=F6IIaXxQOZsxyGhuAWxuAdAulHKnOp9UZtSIoogJ5AOCAQ8AMIIBCgKCAQEA7ubDWIrFVlRwAeV7EF1jniLDVa5+000za7586TxifWUUjnhRwuHqLRPTQpgOaBJ18NkOfg8bnh8nxlXfox1Kr3Q9lWkXAKy9aYEr+XR0tBDsRZXhjDH9ZLluOHk2W22GjB4leQmWZiWjjdvadtKVB75j8WbfgrIi3rndvOV/GtLu5JvmRNWwgTN42ML6IcwQ6f35VZ5OaHA9j0"
+	  "KaNR0QiSnZhvSv+cBiiBkeiLEr6bWetFTq/GIv3A2oGu6gKWd/Fp4b5s4uvrhmFNH51SjtxGtHdlA4+gGSMXC0RRbNT7cDM/5/F5ut6FtQ3g2YoPgt7EPSo696L2q4uDQfEzExVQIDAQAB" )  ; ----- DKIM key mail for maillo.dev
