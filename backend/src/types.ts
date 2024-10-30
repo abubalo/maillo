@@ -13,9 +13,9 @@ export interface Email<T = any> {
   subject: string;
   sender: string;
   recipients: {
-    to: string;
-    cc: string;
-    bcc: string;
+    to: string[];
+    cc?: string[];
+    bcc?: string[];
   };
   text: string;
   body: string;
@@ -38,12 +38,33 @@ export interface Email<T = any> {
   isArchived: boolean;
 }
 
+export type ForwardEmailOption = {
+  originalEmailId: string;
+  to: string;
+  cc?: string[];
+  bcc?: string[];
+  additionalText?: string;
+};
+
+export type ReplyEmailOption = {
+  originalEmailId: string;
+  replyToAll: boolean;
+  body: string;
+  attachment?: Attachment;
+};
+
+export interface DraftEmail extends Email {
+  lastSave: Date;
+  autoSaveKey?: string;
+}
+
 export type Attachment = {
   id?: string;
   filename: string;
   size: number;
   contentType: string;
-  content?: Buffer;
+  cid?: string;
+  content?: Buffer | string;
 };
 
 export interface PaginatedResponse<T> {
