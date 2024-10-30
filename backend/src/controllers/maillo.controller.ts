@@ -6,7 +6,7 @@ import {
   toggleStarred,
   toggleRead as toggleReadService,
   getEmailById,
-} from "../services/email.service";
+} from "../services/maillo.service";
 import createHttpError from "http-errors";
 import { Email, Folder } from "@/types";
 import { logger } from "../utils/logger";
