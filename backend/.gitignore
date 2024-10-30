@@ -145,3 +145,5 @@ dist/
 
 # EC2 Ubutuntu key-pair
 *.pem
+mail.private
+mail.txt
