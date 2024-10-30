@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { 
-  fetchEmails, 
-  sendEmail as sendEmailService, 
+import {
+  fetchEmails,
+  sendEmail as sendEmailService,
   moveEmail,
   toggleStarred,
   toggleRead as toggleReadService,
-  getEmailById
+  getEmailById,
 } from "../services/email.service";
 import createHttpError from "http-errors";
 import { Email, Folder } from "@/types";
@@ -161,7 +161,10 @@ export async function draftEmail(req: Request, res: Response): Promise<void> {
       throw createHttpError(401, "User ID is missing");
     }
 
-    const result = await sendEmailService(userId, { ...emailData, isDraft: true });
+    const result = await sendEmailService(userId, {
+      ...emailData,
+      isDraft: true,
+    });
 
     if (result !== true) {
       throw createHttpError(result.status || 500, result.message);
@@ -183,7 +186,12 @@ export async function archiveEmail(req: Request, res: Response): Promise<void> {
       throw createHttpError(401, "User ID is missing");
     }
 
-    const result = await moveEmail(userId, emailId, folder as Folder, "Archive");
+    const result = await moveEmail(
+      userId,
+      emailId,
+      folder as Folder,
+      "Archive"
+    );
 
     if ("message" in result) {
       throw createHttpError(result.status || 500, result.message);
@@ -215,7 +223,10 @@ export async function permanentlyDeleteEmail(
     }
 
     if (!emailDetails.isDeleted) {
-      throw createHttpError(400, "Email must be in Trash before permanent deletion");
+      throw createHttpError(
+        400,
+        "Email must be in Trash before permanent deletion"
+      );
     }
 
     // Todo: Move to a special deletion folder or implement permanent deletion logic here
