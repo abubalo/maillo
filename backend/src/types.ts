@@ -92,6 +92,7 @@ declare global {
     interface Request {
       userId?: string;
       user?: User;
+      fileUrl?: string
     }
   }
 }
