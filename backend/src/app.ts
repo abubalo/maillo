@@ -6,7 +6,7 @@ import httpLogger from "./middleware/httpLogger";
 import { apiRateLimiter, authLimiter } from "./middleware/limiter";
 import { corsOptions } from "./config/corsOptions";
 import userRoutes from "./routes/user.routes";
-import emailRoutes from "./routes/email.routes";
+import emailRoutes from "./routes/maillo.routes";
 import { isAuthenticated } from "./middleware/isAuthenticated";
 import { isAuthorized } from "./middleware/isAuthorized";
 import { errorHandler } from "./middleware/errorHandler";
