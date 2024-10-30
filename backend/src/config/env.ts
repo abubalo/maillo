@@ -22,4 +22,5 @@ export const env = cleanEnv(process.env, {
   IMAP_PORT: num(),
   REDIS_UPSTACH_URL: str(),
   REDIS_CACHE_TTL: num(),
+  DRAFT_AUTOSAVE_INTERVAL: num(),
 });
