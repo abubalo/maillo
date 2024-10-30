@@ -5,10 +5,19 @@ import {
   releaseImapClient,
   ImapClient,
 } from "../config/imapClient";
-import { Attachment, Email, Folder, PaginatedResponse } from "../types";
+import {
+  Attachment,
+  DraftEmail,
+  Email,
+  Folder,
+  ForwardEmailOption,
+  PaginatedResponse,
+  ReplyEmailOption,
+} from "../types";
 import { createTransporter } from "@/config/smtp.config";
 import { getUserFromCache } from "@/cache/user.cache";
 import { MailloServiceError } from "@/errors/errors";
+import { createMimeMessage } from "@/utils/mimeMessage";
 
 interface EmailError {
   message: string;
@@ -26,7 +35,7 @@ const createEmailError = (
   originalError,
 });
 
-const formatSenderName = (
+export const formatSenderName = (
   firstName: string,
   lastName: string,
   email: string
@@ -39,43 +48,35 @@ export async function sendEmail(
   const userResult = await getUserFromCache(userId);
 
   if (!userResult) {
-    return createEmailError(`Failed to find user: `);
+    return { message: "Failed to find user", status: 404 };
   }
 
   const { username, password, firstName, lastName } = userResult;
 
   if (!email.recipients.to?.length) {
-    return createEmailError("No recipients specified", 400);
+    return { message: "No recipients specified", status: 400 };
   }
 
   try {
     const transporter = createTransporter(username, password);
 
+    const mimeContent = await createMimeMessage(email, userResult);
+
     await transporter.sendMail({
       from: formatSenderName(firstName, lastName, username),
       to: email.recipients.to,
-      cc: email.recipients.cc || [],
-      bcc: email.recipients.bcc || [],
-      subject: email.subject,
-      text: email.text,
-      html: email.body,
-      attachments: email.attachments.map((att) => ({
-        filename: att.filename,
-        content: att.content,
-        contentType: att.contentType,
-      })),
+      raw: mimeContent,
     });
 
     logger.info(`Email sent successfully by user ${userId}`);
     return true;
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
     logger.error(`Error sending email: ${errorMessage}`);
-
-    return createEmailError("Failed to send email", 500, error);
+    return { message: "Failed to send email", status: 500, originalError: error };
   }
 }
+
 
 export async function handleEmailSending(userId: string, emailData: Email) {
   const result = await sendEmail(userId, emailData);
@@ -462,5 +463,219 @@ export async function toggleRead(
   } catch (error) {
     logger.error("Error toggling read status", { error, userId });
     throw new MailloServiceError("Error toggling read status");
+  }
+}
+
+export async function ForwardEmail(
+  userId: string,
+  options: ForwardEmailOption
+): Promise<true | EmailError> {
+  try {
+    const originalEmail = await getEmailById(userId, options.originalEmailId);
+
+    if ("message" in originalEmail) {
+      return createEmailError("Failed to featch original email", 404);
+    }
+
+    const forwardedBody = String.raw`
+    <body>
+  ${
+    options.additionalText
+      ? `
+  <p>${options.additionalText}</p>
+  <br />`
+      : ""
+  }
+  <p>---------- Forwarded message ----------</p>
+  <p>From: ${originalEmail.sender}</p>
+  <p>Date: ${originalEmail.date?.toLocaleString()}</p>
+  <p>Subject: ${originalEmail.subject}</p>
+  <p>To: ${originalEmail.recipients.to}</p>
+  <br />
+  ${originalEmail.body}
+</body>`;
+
+    const forwardedEmail: Email = {
+      subject: `Fwd: ${originalEmail.subject}`,
+      body: forwardedBody,
+      text: options.additionalText || "",
+      recipients: {
+        to: options.to,
+        cc: options.cc || [],
+        bcc: options.bcc || [],
+      },
+      attachments: originalEmail.attachments,
+    };
+
+    return await sendEmail(userId, forwardedEmail);
+  } catch (error) {
+    logger.error("Error forwarding email", { error, userId });
+    return createEmailError("Failed to forwarding email", 500, error);
+  }
+}
+
+async function resolveDraftConflict(
+  userId: string,
+  existingDraft: DraftEmail,
+  newDraft: Partial<Email>
+): Promise<DraftEmail | EmailError> {
+  let imapClient: ImapClient | null = null;
+  try {
+    const user = await getUserFromCache(userId);
+    if (!user) {
+      return createEmailError("User not found", 404);
+    }
+
+    imapClient = await getSecureImapClient(userId, user.email, user.password);
+    const draftLock = await imapClient.client.getMailboxLock("Draft");
+
+    try {
+      // Determine the most up-to-date draft
+      const latestDraft =
+        existingDraft.lastSaved > new Date(newDraft.lastSaved!)
+          ? existingDraft
+          : { ...existingDraft, ...newDraft };
+
+      // Save the latest draft
+      const savedDraft = await saveDraft(userId, latestDraft);
+
+      // Delete the older draft
+      if (latestDraft === existingDraft) {
+        await imapClient.client.messageDelete(newDraft.id!);
+      } else {
+        await imapClient.client.messageDelete(existingDraft.id);
+      }
+
+      return savedDraft;
+    } finally {
+      draftLock.release();
+    }
+  } catch (error) {
+    logger.error("Error resolving draft conflict", { error, userId });
+    return createEmailError("Failed to resolve draft conflict", 500, error);
+  } finally {
+    if (imapClient) {
+      await releaseImapClient(imapClient);
+    }
+  }
+}
+
+async function saveDraft(
+  userId: string,
+  draft: Partial<Email>
+): Promise<DraftEmail | EmailError> {
+  let imapClient: ImapClient | null = null;
+  try {
+    const user = await getUserFromCache(userId);
+    if (!user) {
+      return createEmailError("User not found", 404);
+    }
+
+    imapClient = await getSecureImapClient(userId, user.email, user.password);
+    const draftLock = await imapClient.client.getMailboxLock("Draft");
+
+    try {
+      const draftEmail: DraftEmail = {
+        ...draft,
+        isDraft: true,
+        lastSaved: new Date(),
+        flags: new Set(["\\Draft"]),
+        isRead: true,
+        isStarred: false,
+        isSelected: false,
+        isSpam: false,
+        isDeleted: false,
+        isArchived: false,
+      } as DraftEmail;
+
+      // Convert the draft to MIME format
+      const mimeMessage = await createMimeMessage(draftEmail, user);
+
+      // Save to Draft folder
+      const { uid } = await imapClient.client.messageAppend(
+        "Draft",
+        mimeMessage,
+        ["\\Draft"]
+      );
+
+      return {
+        ...draftEmail,
+        id: String(uid),
+      };
+    } finally {
+      draftLock.release();
+    }
+  } catch (error) {
+    logger.error("Error saving draft", { error, userId });
+    return createEmailError("Failed to save draft", 500, error);
+  } finally {
+    if (imapClient) {
+      await releaseImapClient(imapClient);
+    }
+  }
+}
+
+export async function ReplyToEmail(userId: string, options: ReplyEmailOption) {
+  try {
+    const originalEmail = await getEmailById(userId, options.originalEmailId);
+
+    if ("message" in originalEmail) {
+      return createEmailError("Failed to fetch original email", 404);
+    }
+
+    const user = await getUserFromCache(userId);
+
+    if (!user) {
+      return createEmailError("User not found", 404);
+    }
+
+    let recipients: { to: string[]; cc?: string[]; bcc?: string[] };
+
+    if (options.replyToAll) {
+      const allRecipients = new Set([
+        ...originalEmail.recipients.to.split(",").map((e) => e.trim()),
+        ...(originalEmail.recipients.cc?.split(",").map((e) => e.trim()) || []),
+      ]);
+
+      allRecipients.delete(user.email);
+
+      recipients = {
+        to: [originalEmail.sender],
+        cc: Array.from(allRecipients),
+      };
+
+      const replyBody = `
+      <div>
+        ${options.body}
+        <br/>
+        <p>On ${originalEmail.date?.toLocaleString()}, ${
+        originalEmail.sender
+      } wrote:</p>
+        <blockquote style="border-left: 2px solid #ccc; padding-left: 10px; margin-left: 10px;">
+          ${originalEmail.body}
+        </blockquote>
+      </div>
+    `;
+
+      const replyEmail: Email = {
+        subject: originalEmail.subject.startsWith("Re:")
+          ? originalEmail.subject
+          : `Re: ${originalEmail.subject}`,
+        body: replyBody,
+        text: options.body,
+        recipients,
+        attachments: options.attachments || [],
+        inReplyTo: [originalEmail.messageId!],
+      };
+
+      return await sendEmail(userId, replyEmail);
+    } else {
+      recipients = {
+        to: [originalEmail.sender],
+      };
+    }
+  } catch (error) {
+    logger.error("Error replying to email", { error, userId });
+    return createEmailError("Failed to reply to email", 500, error);
   }
 }
