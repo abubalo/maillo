@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
-import { getUserById } from '../models/user.model';
-import { getRedisClient } from '@/utils/redis';
-import { redisConfig } from '@/config/redis.config';
+import { NextFunction, Request, Response } from "express";
+import { getUserById } from "@/services/user.service";
+import { getRedisClient } from "@/utils/redis";
+import { getUserFromCache, setUserInCache } from "@/cache/user.cache";
+import { env } from "@/config/env";
 
 export async function isAuthorized(
   req: Request,
@@ -15,24 +16,27 @@ export async function isAuthorized(
     if (!userId) {
       return res
         .status(401)
-        .json({ error: 'Unauthorized: User ID is missing' });
+        .json({ error: "Unauthorized: User ID is missing" });
     }
 
-    const cacheduser = await redis.get(`user:${userId}`);
+    const cacheduser = await getUserFromCache(userId);
 
     if (cacheduser) {
-      req.user = JSON.parse(cacheduser);
+      req.user = cacheduser;
     } else {
       const user = await getUserById(userId);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+
+      if ("status" in user) {
+        return res.status(404).json({ error: "User not found" });
       }
 
       await redis.setex(
         `user:${userId}`,
-        redisConfig.ttl,
+        env.REDIS_CACHE_TTL,
         JSON.stringify(user)
       );
+
+      await setUserInCache(userId, user);
 
       req.user = user;
     }
@@ -41,7 +45,7 @@ export async function isAuthorized(
 
     next();
   } catch (error) {
-    console.error('Authorization error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error("Authorization error:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
