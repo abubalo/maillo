@@ -7,7 +7,7 @@ import {
 } from "../config/imapClient";
 import { Attachment, Email, Folder, PaginatedResponse } from "../types";
 import { createTransporter } from "@/config/smtp.config";
-import { getUserFromCache } from "@/utils/user.cache";
+import { getUserFromCache } from "@/cache/user.cache";
 import { MailloServiceError } from "@/errors/errors";
 
 interface EmailError {
