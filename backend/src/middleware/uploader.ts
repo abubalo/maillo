@@ -18,8 +18,8 @@ const upload = multer({
 
 export function uploader(
   fieldName: string,
-  callback: (fileName: string, fileBuffer: Buffer) => Promise<string>
-  filePath: string,
+  callback: (fileName: string, fileBuffer: Buffer, filePath: string) => Promise<string>,
+  filePath: string
 ) {
   return [
     upload.single(fieldName),
