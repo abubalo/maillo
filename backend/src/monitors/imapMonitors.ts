@@ -110,15 +110,15 @@ const monitor = new ImapPoolMonitor(imapPool);
 monitor.startMonitoring();
 
 monitor.on('highUtilization', (rate) => {
-  // Consider increasing pool size or optimizing connection usage
+  // TODO:  Increase pool size or optimizing connection usage
 });
 
 monitor.on('highWaitingClients', (count) => {
-  // Consider increasing pool size or investigating bottlenecks
+  // TODO: Increase pool size or investigating bottlenecks
 });
 
 monitor.on('highErrorCount', (count) => {
-  // Investigate and address recurring errors
+  // TODO: Investigate and address recurring errors
 });
 
 export { ImapPoolMonitor };
